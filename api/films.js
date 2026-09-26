@@ -12,35 +12,35 @@ export default async function handler(req, res) {
 
   await connectDB();
 
-  const { id } = req.query;
+  const { id, full } = req.query;
 
   try {
     if (req.method === 'GET') {
+      // 1. Ambil 1 Film Lengkap berdasarkan ID (untuk Halaman Detail)
       if (id) {
         const film = await Film.findById(id);
         if (!film) return res.status(404).json({ message: 'Film tidak ditemukan' });
         return res.status(200).json(film);
       }
 
+      // 2. Ambil Semua Film
       const films = await Film.find().sort({ createdAt: -1 });
 
-      const acceptHeader = req.headers['accept'] || '';
-      const isDirectBrowser = acceptHeader.includes('text/html');
-
-      // Jika dibuka langsung di browser, ubah Base64 jadi preview gambar kecil
-      if (isDirectBrowser) {
-        const cleanedFilms = films.map((f) => {
-          const obj = f.toObject();
-          if (obj.gambar && obj.gambar.startsWith('data:image')) {
-            obj.gambar = `<img src="${obj.gambar}" style="max-height:80px; border-radius:4px;" alt="preview" />`;
-          }
-          return obj;
-        });
-        return res.status(200).json(cleanedFilms);
+      // Jika dipanggil oleh React/Frontend (mengirim parameter ?full=true), kirim data gambar utuh
+      if (full === 'true') {
+        return res.status(200).json(films);
       }
 
-      // Untuk frontend (React fetch/axios), tetap kirim data Base64 asli
-      return res.status(200).json(films);
+      // Jika dibuka di browser biasa (/api/films), sembunyikan Base64 gambar agar bersih & rapi
+      const cleanedFilms = films.map((f) => {
+        const obj = f.toObject();
+        if (obj.gambar && obj.gambar.startsWith('data:image')) {
+          obj.gambar = '[Base64 Gambar Disembunyikan]';
+        }
+        return obj;
+      });
+
+      return res.status(200).json(cleanedFilms);
     }
 
     if (req.method === 'POST') {
