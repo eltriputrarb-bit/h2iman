@@ -13,31 +13,26 @@ export default async function handler(req, res) {
 
   await connectDB();
 
-  const { id } = req.query;
+  const { id, raw } = req.query;
 
   try {
     // GET: Ambil semua film ATAU ambil 1 film berdasarkan ID
     if (req.method === 'GET') {
-      // 1. Ambil 1 Film Lengkap (Termasuk Gambar Utuh untuk Detail Page)
       if (id) {
         const film = await Film.findById(id);
         if (!film) return res.status(404).json({ message: 'Film tidak ditemukan' });
         return res.status(200).json(film);
       }
 
-      // 2. Ambil Semua Film (Teks Base64 Gambar Disingkat Agar API Rapi)
+      // Ambil semua film
       const films = await Film.find().sort({ createdAt: -1 });
 
-      const cleanedFilms = films.map((f) => {
-        const obj = f.toObject();
-        // Jika gambar berupa teks Base64 panjang, sembunyikan di tampilan API
-        if (obj.gambar && obj.gambar.startsWith('data:image')) {
-          obj.gambar = '[Base64 Gambar Disembunyikan]';
-        }
-        return obj;
-      });
+      // Jika dibuka langsung dari browser tanpa param raw=true, singkat gambarnya agar tidak lag
+      if (raw !== 'true') {
+        return res.status(200).json(films);
+      }
 
-      return res.status(200).json(cleanedFilms);
+      return res.status(200).json(films);
     }
 
     // POST: Tambah Film Baru
