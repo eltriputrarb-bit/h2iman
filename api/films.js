@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import connectDB from './db.js';
 import Film from './models/Film.js';
 
@@ -18,6 +19,11 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
       // 1. Ambil 1 Film Lengkap berdasarkan ID (untuk Halaman Detail)
       if (id) {
+        // Cek dulu apakah ID sesuai dengan format ObjectId MongoDB (24 karakter hex)
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+          return res.status(404).json({ message: 'ID tidak valid atau merupakan film dummy' });
+        }
+
         const film = await Film.findById(id);
         if (!film) return res.status(404).json({ message: 'Film tidak ditemukan' });
         return res.status(200).json(film);
@@ -62,6 +68,12 @@ export default async function handler(req, res) {
 
     if (req.method === 'PUT') {
       if (!id) return res.status(400).json({ message: 'ID diperlukan' });
+
+      // Validasi ObjectId untuk PUT
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: 'ID MongoDB tidak valid' });
+      }
+
       const { judul, gambar, trailer, deskripsi } = req.body;
       const updatedFilm = await Film.findByIdAndUpdate(
         id,
@@ -74,6 +86,12 @@ export default async function handler(req, res) {
 
     if (req.method === 'DELETE') {
       if (!id) return res.status(400).json({ message: 'ID diperlukan' });
+
+      // Validasi ObjectId untuk DELETE
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: 'ID MongoDB tidak valid' });
+      }
+
       await Film.findByIdAndDelete(id);
       return res.status(200).json({ message: 'Film berhasil dihapus' });
     }
