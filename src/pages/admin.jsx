@@ -88,7 +88,7 @@ export default function Admin() {
         </div>
 
         <div className="admin-actions">
-          <Link to="/detail" className="btn-add-film">
+          <Link to="/detail" state={{ from: '/admin' }} className="btn-add-film">
             + Tambah Film
           </Link>
         </div>
