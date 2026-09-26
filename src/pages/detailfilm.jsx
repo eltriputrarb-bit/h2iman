@@ -16,32 +16,40 @@ export default function DetailFilm() {
     if (id) {
       setLoading(true);
 
-      // 1. Cek dari backend API Vercel
-      fetch(`/api/films?id=${id}`)
-        .then((res) => {
-          if (!res.ok) throw new Error('Film tidak ditemukan di Database Server');
-          return res.json();
-        })
-        .then((apiFilm) => {
-          if (apiFilm) {
-            setJudul(apiFilm.judul || apiFilm.title || '');
-            setGambarUrl(apiFilm.gambar || apiFilm.image || '');
-            setDeskripsi(apiFilm.deskripsi || apiFilm.description || '');
-            setTrailerLink(apiFilm.trailer || '');
-          }
-          setLoading(false);
-        })
-        .catch(() => {
-          // 2. Fallback: Cek data dummy lokal awal
-          const localFilm = moviesData.find((m) => String(m.id) === String(id));
-          if (localFilm) {
-            setJudul(localFilm.title || localFilm.judul || '');
-            setGambarUrl(localFilm.image || localFilm.gambar || '');
-            setDeskripsi(localFilm.description || localFilm.deskripsi || '');
-            setTrailerLink(localFilm.trailer || '');
-          }
-          setLoading(false);
-        });
+      // Cek apakah ID sesuai format ObjectId MongoDB (24 karakter heksadesimal)
+      const isValidMongoId = /^[0-9a-fA-F]{24}$/.test(id);
+
+      if (isValidMongoId) {
+        // 1. Jika ID MongoDB valid, ambil data dari backend API
+        fetch(`/api/films?id=${id}`)
+          .then((res) => {
+            if (!res.ok) throw new Error('Film tidak ditemukan di Database Server');
+            return res.json();
+          })
+          .then((apiFilm) => {
+            if (apiFilm) {
+              setJudul(apiFilm.judul || apiFilm.title || '');
+              setGambarUrl(apiFilm.gambar || apiFilm.image || '');
+              setDeskripsi(apiFilm.deskripsi || apiFilm.description || '');
+              setTrailerLink(apiFilm.trailer || '');
+            }
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.warn('Gagal memuat film dari server:', err.message);
+            setLoading(false);
+          });
+      } else {
+        // 2. Jika ID dummy ("1", "2", dst), langsung ambil dari data dummy lokal tanpa fetch ke server
+        const localFilm = moviesData.find((m) => String(m.id) === String(id));
+        if (localFilm) {
+          setJudul(localFilm.title || localFilm.judul || '');
+          setGambarUrl(localFilm.image || localFilm.gambar || '');
+          setDeskripsi(localFilm.description || localFilm.deskripsi || '');
+          setTrailerLink(localFilm.trailer || '');
+        }
+        setLoading(false);
+      }
     } else {
       setJudul('');
       setGambarUrl('');
@@ -66,7 +74,7 @@ export default function DetailFilm() {
     }
   };
 
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const filmData = {
@@ -99,8 +107,8 @@ const handleSubmit = async (e) => {
       }
 
       if (response && response.ok) {
-        alert(`Data film "${judul}" berhasil disimpan ke MongoDB!`);
-        navigate('/');
+        alert(`Data film "${judul}" berhasil disimpan!`);
+        navigate('/'); // Mengarahkan kembali ke halaman Home
       } else {
         const errData = await response.json().catch(() => ({}));
         throw new Error(errData.message || `Gagal menyimpan (Status ${response?.status})`);
@@ -170,7 +178,7 @@ const handleSubmit = async (e) => {
           <label>Trailer</label>
           <input
             type="text"
-            placeholder="masuk link...."
+            placeholder="Masukkan link trailer YouTube..."
             value={trailerLink}
             onChange={(e) => setTrailerLink(e.target.value)}
             className="form-input"
