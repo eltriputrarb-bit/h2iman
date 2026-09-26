@@ -2,7 +2,6 @@ import connectDB from './db.js';
 import Film from './models/Film.js';
 
 export default async function handler(req, res) {
-  // Set CORS Header untuk Vercel
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -13,10 +12,9 @@ export default async function handler(req, res) {
 
   await connectDB();
 
-  const { id, raw } = req.query;
+  const { id } = req.query;
 
   try {
-    // GET: Ambil semua film ATAU ambil 1 film berdasarkan ID
     if (req.method === 'GET') {
       if (id) {
         const film = await Film.findById(id);
@@ -24,18 +22,27 @@ export default async function handler(req, res) {
         return res.status(200).json(film);
       }
 
-      // Ambil semua film
       const films = await Film.find().sort({ createdAt: -1 });
 
-      // Jika dibuka langsung dari browser tanpa param raw=true, singkat gambarnya agar tidak lag
-      if (raw !== 'true') {
-        return res.status(200).json(films);
+      const acceptHeader = req.headers['accept'] || '';
+      const isDirectBrowser = acceptHeader.includes('text/html');
+
+      // Jika dibuka langsung di browser, ubah Base64 jadi preview gambar kecil
+      if (isDirectBrowser) {
+        const cleanedFilms = films.map((f) => {
+          const obj = f.toObject();
+          if (obj.gambar && obj.gambar.startsWith('data:image')) {
+            obj.gambar = `<img src="${obj.gambar}" style="max-height:80px; border-radius:4px;" alt="preview" />`;
+          }
+          return obj;
+        });
+        return res.status(200).json(cleanedFilms);
       }
 
+      // Untuk frontend (React fetch/axios), tetap kirim data Base64 asli
       return res.status(200).json(films);
     }
 
-    // POST: Tambah Film Baru
     if (req.method === 'POST') {
       const { judul, gambar, trailer, deskripsi } = req.body;
       const newFilm = new Film({ judul, gambar, trailer, deskripsi });
@@ -43,7 +50,6 @@ export default async function handler(req, res) {
       return res.status(201).json(newFilm);
     }
 
-    // PUT: Update Film berdasarkan ID
     if (req.method === 'PUT') {
       if (!id) return res.status(400).json({ message: 'ID diperlukan' });
       const { judul, gambar, trailer, deskripsi } = req.body;
@@ -56,7 +62,6 @@ export default async function handler(req, res) {
       return res.status(200).json(updatedFilm);
     }
 
-    // DELETE: Hapus Film berdasarkan ID
     if (req.method === 'DELETE') {
       if (!id) return res.status(400).json({ message: 'ID diperlukan' });
       await Film.findByIdAndDelete(id);
