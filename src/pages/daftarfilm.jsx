@@ -55,7 +55,7 @@ export default function DaftarFilm() {
   return (
     <div className="page-container">
       <div className="section-header">
-        <h2 className="section-title">Daftar Film Popular</h2>
+        <h2 className="section-title">Daftar Film</h2>
       </div>
       
       <div className="movie-grid">
