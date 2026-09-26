@@ -66,7 +66,7 @@ export default function DetailFilm() {
     }
   };
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
 
     const filmData = {
@@ -76,16 +76,21 @@ export default function DetailFilm() {
       deskripsi,
     };
 
+    // Cek apakah ID valid 24-karakter ObjectId MongoDB
+    const isValidMongoId = id && /^[0-9a-fA-F]{24}$/.test(id);
+
     try {
       let response;
-      
-      if (id) {
+
+      // Jika ID adalah MongoDB ObjectId valid, lakukan update (PUT)
+      if (isValidMongoId) {
         response = await fetch(`/api/films?id=${id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(filmData),
         });
       } else {
+        // Jika ID dummy ("1", "2", dsb) ATAU tambah film baru, buat sebagai data baru di MongoDB (POST)
         response = await fetch('/api/films', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -94,8 +99,8 @@ export default function DetailFilm() {
       }
 
       if (response && response.ok) {
-        alert(`Data film "${judul}" berhasil disimpan!`);
-        navigate(-1);
+        alert(`Data film "${judul}" berhasil disimpan ke MongoDB!`);
+        navigate('/admin');
       } else {
         const errData = await response.json().catch(() => ({}));
         throw new Error(errData.message || `Gagal menyimpan (Status ${response?.status})`);
