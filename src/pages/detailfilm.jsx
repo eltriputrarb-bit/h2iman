@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { moviesData } from './daftarfilm';
 
 export default function DetailFilm() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Memeriksa dari mana user datang (misal dari /admin atau /)
+  const fromPage = location.state?.from || -1;
 
   const [judul, setJudul] = useState('');
   const [gambarUrl, setGambarUrl] = useState('');
   const [trailerLink, setTrailerLink] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false); // State untuk loading submit
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -104,7 +108,12 @@ export default function DetailFilm() {
 
       if (response && response.ok) {
         alert(`Data film "${judul}" berhasil disimpan!`);
-        navigate('/');
+        // Mengarahkan kembali ke halaman asal (misal /admin atau /)
+        if (typeof fromPage === 'string') {
+          navigate(fromPage);
+        } else {
+          navigate(-1);
+        }
       } else {
         const errData = await response.json().catch(() => ({}));
         throw new Error(errData.message || `Gagal menyimpan (Status ${response?.status})`);
@@ -129,7 +138,7 @@ export default function DetailFilm() {
     <div className="detail-container">
       <div className="detail-header">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => (typeof fromPage === 'string' ? navigate(fromPage) : navigate(-1))}
           className="back-link"
           style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
         >
@@ -195,7 +204,7 @@ export default function DetailFilm() {
         </div>
 
         <button type="submit" className="btn-submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Menyimpan data loading...' : (id ? 'Simpan Perubahan' : 'Tambah Film')}
+          {isSubmitting ? 'Menyimpan...' : (id ? 'Simpan Perubahan' : 'Tambah Film')}
         </button>
       </form>
     </div>
