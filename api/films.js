@@ -26,17 +26,27 @@ export default async function handler(req, res) {
       // 2. Ambil Semua Film
       const films = await Film.find().sort({ createdAt: -1 });
 
-      // Jika dipanggil oleh React/Frontend (mengirim parameter ?full=true), kirim data gambar utuh
+      // Jika dipanggil oleh React/Frontend (mengirim parameter ?full=true), kirim data utuh
       if (full === 'true') {
         return res.status(200).json(films);
       }
 
-      // Jika dibuka di browser biasa (/api/films), sembunyikan Base64 gambar agar bersih & rapi
+      // Jika dibuka di browser biasa (/api/films), sembunyikan gambar, judul, deskripsi, & timestamp
       const cleanedFilms = films.map((f) => {
         const obj = f.toObject();
+
         if (obj.gambar && obj.gambar.startsWith('data:image')) {
           obj.gambar = '[Base64 Gambar Disembunyikan]';
         }
+        
+        // Sembunyikan field yang diinginkan
+        obj.judul = '[Disembunyikan]';
+        obj.deskripsi = '[Disembunyikan]';
+        
+        delete obj.createdAt;
+        delete obj.updatedAt;
+        delete obj.__v;
+
         return obj;
       });
 
