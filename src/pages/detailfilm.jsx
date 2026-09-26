@@ -100,7 +100,7 @@ const handleSubmit = async (e) => {
 
       if (response && response.ok) {
         alert(`Data film "${judul}" berhasil disimpan ke MongoDB!`);
-        navigate('/admin');
+        navigate('/');
       } else {
         const errData = await response.json().catch(() => ({}));
         throw new Error(errData.message || `Gagal menyimpan (Status ${response?.status})`);
