@@ -11,16 +11,15 @@ export default function DetailFilm() {
   const [trailerLink, setTrailerLink] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // State untuk loading submit
 
   useEffect(() => {
     if (id) {
       setLoading(true);
 
-      // Cek apakah ID sesuai format ObjectId MongoDB (24 karakter heksadesimal)
       const isValidMongoId = /^[0-9a-fA-F]{24}$/.test(id);
 
       if (isValidMongoId) {
-        // 1. Jika ID MongoDB valid, ambil data dari backend API
         fetch(`/api/films?id=${id}`)
           .then((res) => {
             if (!res.ok) throw new Error('Film tidak ditemukan di Database Server');
@@ -40,7 +39,6 @@ export default function DetailFilm() {
             setLoading(false);
           });
       } else {
-        // 2. Jika ID dummy ("1", "2", dst), langsung ambil dari data dummy lokal tanpa fetch ke server
         const localFilm = moviesData.find((m) => String(m.id) === String(id));
         if (localFilm) {
           setJudul(localFilm.title || localFilm.judul || '');
@@ -76,6 +74,7 @@ export default function DetailFilm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     const filmData = {
       judul,
@@ -84,13 +83,11 @@ export default function DetailFilm() {
       deskripsi,
     };
 
-    // Cek apakah ID valid 24-karakter ObjectId MongoDB
     const isValidMongoId = id && /^[0-9a-fA-F]{24}$/.test(id);
 
     try {
       let response;
 
-      // Jika ID adalah MongoDB ObjectId valid, lakukan update (PUT)
       if (isValidMongoId) {
         response = await fetch(`/api/films?id=${id}`, {
           method: 'PUT',
@@ -98,7 +95,6 @@ export default function DetailFilm() {
           body: JSON.stringify(filmData),
         });
       } else {
-        // Jika ID dummy ("1", "2", dsb) ATAU tambah film baru, buat sebagai data baru di MongoDB (POST)
         response = await fetch('/api/films', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -108,7 +104,7 @@ export default function DetailFilm() {
 
       if (response && response.ok) {
         alert(`Data film "${judul}" berhasil disimpan!`);
-        navigate('/'); // Mengarahkan kembali ke halaman Home
+        navigate('/');
       } else {
         const errData = await response.json().catch(() => ({}));
         throw new Error(errData.message || `Gagal menyimpan (Status ${response?.status})`);
@@ -116,6 +112,8 @@ export default function DetailFilm() {
     } catch (error) {
       console.error('Error simpan data:', error);
       alert(`Gagal menyimpan ke server: ${error.message}`);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -196,8 +194,8 @@ export default function DetailFilm() {
           />
         </div>
 
-        <button type="submit" className="btn-submit">
-          {id ? 'Simpan Perubahan' : 'Tambah Film'}
+        <button type="submit" className="btn-submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Menyimpan data loading...' : (id ? 'Simpan Perubahan' : 'Tambah Film')}
         </button>
       </form>
     </div>
