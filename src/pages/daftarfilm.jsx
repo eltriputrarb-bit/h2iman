@@ -35,7 +35,18 @@ export const moviesData = [
     // image: "https://example.com/poster-puji-syukur.jpg",
     description: "sad",
     trailerEmbed: "https://www.youtube.com/embed/mFea21VooJ4?si=VoEYqrxRgTxvogs8"
-  }
+  },
+  {
+    id: '4',
+    title: "Doraemon",
+    genre: "Animation / Family",
+    // 1. Gambar dari folder public/images/puji-syukur.jpg
+    image: "/images/doraemon.jpg",
+    // ATAU 2. URL langsung ke file .jpg di internet:
+    // image: "https://example.com/poster-puji-syukur.jpg",
+    description: "alone   ",
+    trailerEmbed: "https://www.youtube.com/embed/rn1UFjNMAxA?si=lCFEQc4x3OWOF1xV"
+  },
 ];
 
 export default function DaftarFilm() {
