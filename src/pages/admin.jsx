@@ -12,7 +12,8 @@ export default function Admin() {
   const fetchFilms = () => {
     setLoading(true);
 
-    fetch('/api/films')
+    // Ditambahkan parameter ?full=true agar data Base64 gambar terkirim penuh ke Admin
+    fetch('/api/films?full=true')
       .then((res) => {
         if (!res.ok) throw new Error('Network response status was not ok');
         return res.json();
