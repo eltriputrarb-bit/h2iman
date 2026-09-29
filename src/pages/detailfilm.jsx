@@ -107,8 +107,7 @@ export default function DetailFilm() {
       }
 
       if (response && response.ok) {
-        alert(`Data film "${judul}" berhasil disimpan!`);
-        // Mengarahkan kembali ke halaman asal (misal /admin atau /)
+        // Langsung navigasi ke halaman asal tanpa alert pop-up
         if (typeof fromPage === 'string') {
           navigate(fromPage);
         } else {
@@ -120,7 +119,6 @@ export default function DetailFilm() {
       }
     } catch (error) {
       console.error('Error simpan data:', error);
-      alert(`Gagal menyimpan ke server: ${error.message}`);
     } finally {
       setIsSubmitting(false);
     }
