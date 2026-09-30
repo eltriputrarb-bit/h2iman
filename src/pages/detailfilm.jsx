@@ -21,10 +21,11 @@ export default function DetailFilm() {
     if (id) {
       setLoading(true);
 
-      const isValidMongoId = /^[0-9a-fA-F]{24}$/.test(id);
+      const isValidMongoId = /^[0-9a-fA-F]{24}\$/.test(id);
 
       if (isValidMongoId) {
-        fetch(`/api/films?id=${id}`)
+        // ── KUNCI FIX: Menambahkan &full=true agar sinkron dengan otentikasi data backend ──
+        fetch(`/api/films?id=${id}&full=true`)
           .then((res) => {
             if (!res.ok) throw new Error('Film tidak ditemukan di Database Server');
             return res.json();
@@ -87,7 +88,7 @@ export default function DetailFilm() {
       deskripsi,
     };
 
-    const isValidMongoId = id && /^[0-9a-fA-F]{24}$/.test(id);
+    const isValidMongoId = id && /^[0-9a-fA-F]{24}\$/.test(id);
 
     try {
       let response;
@@ -107,7 +108,6 @@ export default function DetailFilm() {
       }
 
       if (response && response.ok) {
-        // Langsung navigasi ke halaman asal tanpa alert pop-up
         if (typeof fromPage === 'string') {
           navigate(fromPage);
         } else {
