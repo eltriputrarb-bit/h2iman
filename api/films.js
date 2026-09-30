@@ -19,7 +19,6 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
       // 1. Ambil 1 Film Lengkap berdasarkan ID (untuk Halaman Detail)
       if (id) {
-        // Cek dulu apakah ID sesuai dengan format ObjectId MongoDB (24 karakter hex)
         if (!mongoose.Types.ObjectId.isValid(id)) {
           return res.status(404).json({ message: 'ID tidak valid atau merupakan film dummy' });
         }
@@ -32,12 +31,12 @@ export default async function handler(req, res) {
       // 2. Ambil Semua Film
       const films = await Film.find().sort({ createdAt: -1 });
 
-      // Jika dipanggil oleh React/Frontend (mengirim parameter ?full=true), kirim data utuh
+      // ── KUNCI FIX: Jika aplikasi React mengirim ?full=true, langsung kirim data asli MongoDB ──
       if (full === 'true') {
         return res.status(200).json(films);
       }
 
-      // Jika dibuka di browser biasa (/api/films), sembunyikan gambar, judul, deskripsi, & timestamp
+      // Jika dibuka di browser biasa tanpa parameter (/api/films), samarkan informasinya
       const cleanedFilms = films.map((f) => {
         const obj = f.toObject();
 
@@ -45,7 +44,6 @@ export default async function handler(req, res) {
           obj.gambar = '[Base64 Gambar Disembunyikan]';
         }
         
-        // Sembunyikan field yang diinginkan
         obj.judul = '[Disembunyikan]';
         obj.deskripsi = '[Disembunyikan]';
         
@@ -69,7 +67,6 @@ export default async function handler(req, res) {
     if (req.method === 'PUT') {
       if (!id) return res.status(400).json({ message: 'ID diperlukan' });
 
-      // Validasi ObjectId untuk PUT
       if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: 'ID MongoDB tidak valid' });
       }
@@ -87,7 +84,6 @@ export default async function handler(req, res) {
     if (req.method === 'DELETE') {
       if (!id) return res.status(400).json({ message: 'ID diperlukan' });
 
-      // Validasi ObjectId untuk DELETE
       if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: 'ID MongoDB tidak valid' });
       }
