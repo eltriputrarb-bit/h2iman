@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { moviesData } from './daftarfilm';
 
-// Helper untuk memastikan URL langsung (non-embed)
 const getDirectYoutubeUrl = (url) => {
   if (!url) return '';
   if (url.includes('youtube.com/embed/')) {
@@ -26,10 +25,11 @@ export default function DetailFilm() {
   const [trailerLink, setTrailerLink] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
 
-  // State Dinamis untuk Tag / Meta Film
+  // State Tag & Rating Bintang
   const [tahun, setTahun] = useState('2026');
   const [rating, setRating] = useState('13+');
   const [kategori, setKategori] = useState('Film');
+  const [bintang, setBintang] = useState(5);
 
   const [loading, setLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,10 +51,10 @@ export default function DetailFilm() {
               setGambarUrl(apiFilm.gambar || apiFilm.image || '');
               setDeskripsi(apiFilm.deskripsi || apiFilm.description || '');
               setTrailerLink(apiFilm.trailer || apiFilm.trailerEmbed || '');
-              // Fetch tag dinamis
               setTahun(apiFilm.tahun || '2026');
               setRating(apiFilm.rating || '13+');
               setKategori(apiFilm.kategori || apiFilm.genre || 'Film');
+              setBintang(apiFilm.bintang || 5);
             }
             setLoading(false);
           })
@@ -72,6 +72,7 @@ export default function DetailFilm() {
           setTahun(localFilm.tahun || '2026');
           setRating(localFilm.rating || '13+');
           setKategori(localFilm.kategori || localFilm.genre || 'Film');
+          setBintang(localFilm.bintang || 5);
         }
         setLoading(false);
       }
@@ -95,7 +96,6 @@ export default function DetailFilm() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Menyertakan field tag dinamis
     const filmData = { 
       judul, 
       gambar: gambarUrl, 
@@ -103,7 +103,8 @@ export default function DetailFilm() {
       deskripsi,
       tahun,
       rating,
-      kategori
+      kategori,
+      bintang
     };
 
     const isValidMongoId = id && /^[0-9a-fA-F]{24}$/.test(id);
@@ -145,99 +146,127 @@ export default function DetailFilm() {
     }
   };
 
+  const renderStars = (count) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <span 
+          key={i} 
+          className={`star-icon ${i <= count ? 'active' : ''}`}
+        >
+          ★
+        </span>
+      );
+    }
+    return stars;
+  };
+
   if (loading) {
     return (
       <div className="detail-page-wrapper">
-        <p style={{ color: '#fff' }}>Memuat detail film...</p>
+        <p className="loading-text">Memuat detail film...</p>
       </div>
     );
   }
 
-  // TAMPILAN FORM EDIT ADMIN
+  // TAMPILAN FORM ADMIN
   if (isAdmin) {
     return (
       <div className="detail-page-wrapper">
-        <div className="detail-card" style={{ padding: '2rem' }}>
-          <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between' }}>
-            <button onClick={handleClose} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer' }}>
+        <div className="detail-card admin-mode">
+          <div className="admin-header">
+            <button onClick={handleClose} className="back-btn">
               &larr; Kembali ke Dashboard
             </button>
             <h2>{id ? `Edit: ${judul}` : 'Tambah Film Baru'}</h2>
           </div>
 
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem' }}>Judul Film</label>
+          <form onSubmit={handleSubmit} className="admin-form">
+            <div className="form-group">
+              <label>Judul Film</label>
               <input
                 type="text"
                 value={judul}
                 onChange={(e) => setJudul(e.target.value)}
-                style={{ width: '100%', padding: '0.8rem', borderRadius: '4px', border: '1px solid #444', background: '#222', color: '#fff' }}
+                className="form-input"
                 required
               />
             </div>
 
-            {/* Field Input untuk Tag Dinamis */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
-              <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem' }}>Tahun</label>
+            <div className="form-grid-4">
+              <div className="form-group">
+                <label>Tahun</label>
                 <input
                   type="text"
                   placeholder="2026"
                   value={tahun}
                   onChange={(e) => setTahun(e.target.value)}
-                  style={{ width: '100%', padding: '0.8rem', borderRadius: '4px', border: '1px solid #444', background: '#222', color: '#fff' }}
+                  className="form-input"
                 />
               </div>
-              <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem' }}>Rating Usia</label>
+              <div className="form-group">
+                <label>Rating Usia</label>
                 <input
                   type="text"
                   placeholder="13+"
                   value={rating}
                   onChange={(e) => setRating(e.target.value)}
-                  style={{ width: '100%', padding: '0.8rem', borderRadius: '4px', border: '1px solid #444', background: '#222', color: '#fff' }}
+                  className="form-input"
                 />
               </div>
-              <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem' }}>Kategori / Genre</label>
+              <div className="form-group">
+                <label>Kategori</label>
                 <input
                   type="text"
-                  placeholder="Film / Action"
+                  placeholder="Film"
                   value={kategori}
                   onChange={(e) => setKategori(e.target.value)}
-                  style={{ width: '100%', padding: '0.8rem', borderRadius: '4px', border: '1px solid #444', background: '#222', color: '#fff' }}
+                  className="form-input"
                 />
+              </div>
+              <div className="form-group">
+                <label>Bintang (1 - 5)</label>
+                <select
+                  value={bintang}
+                  onChange={(e) => setBintang(Number(e.target.value))}
+                  className="form-input"
+                >
+                  <option value={1}>1 Bintang</option>
+                  <option value={2}>2 Bintang</option>
+                  <option value={3}>3 Bintang</option>
+                  <option value={4}>4 Bintang</option>
+                  <option value={5}>5 Bintang</option>
+                </select>
               </div>
             </div>
 
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem' }}>Upload Gambar Poster</label>
-              <input type="file" accept="image/*" onChange={handleImageChange} style={{ color: '#fff' }} />
+            <div className="form-group">
+              <label>Upload Gambar Poster</label>
+              <input type="file" accept="image/*" onChange={handleImageChange} className="file-input" />
             </div>
 
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem' }}>Link Trailer YouTube</label>
+            <div className="form-group">
+              <label>Link Trailer YouTube</label>
               <input
                 type="text"
                 placeholder="Tempelkan link YouTube di sini"
                 value={trailerLink}
                 onChange={(e) => setTrailerLink(e.target.value)}
-                style={{ width: '100%', padding: '0.8rem', borderRadius: '4px', border: '1px solid #444', background: '#222', color: '#fff' }}
+                className="form-input"
               />
             </div>
 
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem' }}>Deskripsi Film</label>
+            <div className="form-group">
+              <label>Deskripsi Film</label>
               <textarea
                 rows="4"
                 value={deskripsi}
                 onChange={(e) => setDeskripsi(e.target.value)}
-                style={{ width: '100%', padding: '0.8rem', borderRadius: '4px', border: '1px solid #444', background: '#222', color: '#fff' }}
+                className="form-input"
               />
             </div>
 
-            <button type="submit" disabled={isSubmitting} className="detail-start-btn">
+            <button type="submit" disabled={isSubmitting} className="detail-start-btn submit-btn">
               {isSubmitting ? 'Menyimpan...' : 'Simpan Perubahan'}
             </button>
           </form>
@@ -246,7 +275,7 @@ export default function DetailFilm() {
     );
   }
 
-  // TAMPILAN PENGUNJUNG (TAG DINAMIS)
+  // TAMPILAN PENGUNJUNG
   const directUrl = getDirectYoutubeUrl(trailerLink);
 
   return (
@@ -270,7 +299,6 @@ export default function DetailFilm() {
         <div className="detail-content">
           <h1 className="detail-title">{judul || 'Judul Film'}</h1>
 
-          {/* Menampilkan Tag secara Dinamis */}
           <div className="detail-tags">
             <span className="detail-tag">{tahun || '2026'}</span>
             <span className="detail-tag">{rating || '13+'}</span>
@@ -279,15 +307,21 @@ export default function DetailFilm() {
 
           <p className="detail-description">{deskripsi || 'Belum ada deskripsi untuk film ini.'}</p>
 
-          {directUrl ? (
-            <a href={directUrl} target="_blank" rel="noreferrer" className="detail-start-btn">
-              Mulai &gt;
-            </a>
-          ) : (
-            <button disabled className="detail-start-btn disabled">
-              Mulai &gt;
-            </button>
-          )}
+          <div className="action-rating-container">
+            {directUrl ? (
+              <a href={directUrl} target="_blank" rel="noreferrer" className="detail-start-btn">
+                Mulai &gt;
+              </a>
+            ) : (
+              <button disabled className="detail-start-btn disabled">
+                Mulai &gt;
+              </button>
+            )}
+
+            <div className="stars-container">
+              {renderStars(bintang)}
+            </div>
+          </div>
         </div>
       </div>
     </div>
