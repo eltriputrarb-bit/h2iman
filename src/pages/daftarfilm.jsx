@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Lightbox from '../components/Lightbox';
 
@@ -7,10 +7,7 @@ export const moviesData = [
     id: '1',
     title: "pacrifim",
     genre: "Action / Sci-Fi",
-    // 1. Gambar dari folder public/images/ironman.jpg
     image: "/images/robot.jpg", 
-    // ATAU 2. URL langsung ke file .jpg di internet:
-    // image: "https://example.com/poster-ironman.jpg",
     description: "robot",
     trailerEmbed: "https://www.youtube.com/embed/GUO2RjbaPnc?si=RjCx5soztIi2rcOp"
   },
@@ -18,10 +15,7 @@ export const moviesData = [
     id: '2',
     title: "insterstellar",
     genre: "Action / Sci-Fi",
-    // 1. Gambar dari folder public/images/ironman.jpg
     image: "/images/polz.jpg", 
-    // ATAU 2. URL langsung ke file .jpg di internet:
-    // image: "https://example.com/poster-ironman.jpg",
     description: "bumi",
     trailerEmbed: "https://www.youtube.com/embed/zSWdZVtXT7E"
   },
@@ -29,10 +23,7 @@ export const moviesData = [
     id: '3',
     title: "itu saya",
     genre: "SCHOSL",
-    // 1. Gambar dari folder public/images/puji-syukur.jpg
     image: "/images/katolik.jpg",
-    // ATAU 2. URL langsung ke file .jpg di internet:
-    // image: "https://example.com/poster-puji-syukur.jpg",
     description: "sad",
     trailerEmbed: "https://www.youtube.com/embed/mFea21VooJ4?si=VoEYqrxRgTxvogs8"
   },
@@ -40,28 +31,56 @@ export const moviesData = [
     id: '4',
     title: "Doraemon",
     genre: "Animation / Family",
-    // 1. Gambar dari folder public/images/puji-syukur.jpg
     image: "/images/doraemon.jpg",
-    // ATAU 2. URL langsung ke file .jpg di internet:
-    // image: "https://example.com/poster-puji-syukur.jpg",
-    description: "alone   ",
+    description: "alone",
     trailerEmbed: "https://www.youtube.com/embed/rn1UFjNMAxA?si=lCFEQc4x3OWOF1xV"
   },
   {
     id: '5',
     title: "fast and furious",
     genre: "???",
-    // 1. Gambar dari folder public/images/puji-syukur.jpg
     image: "/images/ptc.jpg",
-    // ATAU 2. URL langsung ke file .jpg di internet:
-    // image: "https://example.com/poster-puji-syukur.jpg",
     description: "ptc",
     trailerEmbed: "https://www.youtube.com/embed/0Xy9fh1G4z8?si=0yep3ZL55_d7jHwq"
   }
 ];
 
+//sudah di deploy di vercel?
+
 export default function DaftarFilm() {
+  const [films, setFilms] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeVideo, setActiveVideo] = useState(null);
+
+  useEffect(() => {
+    // Ambil data film dari API backend
+    fetch('/api/films?full=true')
+      .then((res) => {
+        if (!res.ok) throw new Error('Gagal mengambil data dari server');
+        return res.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setFilms(data);
+        } else {
+          setFilms(moviesData);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.warn('Backend server tidak aktif / error, menggunakan data dummy:', err.message);
+        setFilms(moviesData);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="page-container" style={{ textAlign: 'center', color: '#fff', paddingTop: '2rem' }}>
+        <p>Memuat daftar film...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="page-container">
@@ -70,46 +89,54 @@ export default function DaftarFilm() {
       </div>
       
       <div className="movie-grid">
-        {moviesData.map((film) => (
-          <div key={film.id} className="movie-card">
-            {/* Mengklik gambar akan membuka player video */}
-            <div 
-              style={{ position: 'relative', cursor: 'pointer' }}
-              onClick={() => setActiveVideo(film)}
-            >
-              <img 
-                src={film.image} 
-                alt={film.title} 
-              />
-              {/* Overlay ikon play */}
-              <div style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                backgroundColor: 'rgba(0,0,0,0.6)',
-                borderRadius: '50%',
-                width: '50px',
-                height: '50px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#fff',
-                fontSize: '1.5rem'
-              }}>
-                ▶
+        {films.map((film) => {
+          const filmId = film._id || film.id;
+          const filmTitle = film.judul || film.title;
+          const filmImage = film.gambar || film.image;
+          const filmGenre = film.genre || 'Film';
+          const filmTrailer = film.trailer || film.trailerEmbed;
+
+          return (
+            <div key={filmId} className="movie-card">
+              {/* Mengklik gambar akan membuka player video */}
+              <div 
+                style={{ position: 'relative', cursor: 'pointer' }}
+                onClick={() => setActiveVideo({ trailerEmbed: filmTrailer, title: filmTitle })}
+              >
+                <img 
+                  src={filmImage} 
+                  alt={filmTitle} 
+                />
+                {/* Overlay ikon play */}
+                <div style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  backgroundColor: 'rgba(0,0,0,0.6)',
+                  borderRadius: '50%',
+                  width: '50px',
+                  height: '50px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#fff',
+                  fontSize: '1.5rem'
+                }}>
+                  ▶
+                </div>
+              </div>
+
+              <div className="movie-card-content">
+                <h3>{filmTitle}</h3>
+                <p className="genre-text">{filmGenre}</p>
+                <Link to={`/detail/${filmId}`} className="detail-btn">
+                  DETAIL &gt;
+                </Link>
               </div>
             </div>
-
-            <div className="movie-card-content">
-              <h3>{film.title}</h3>
-              <p className="genre-text">{film.genre}</p>
-              <Link to={`/detail/${film.id}`} className="detail-btn">
-                DETAIL &gt;
-              </Link>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Pop-up Modal Lightbox Video */}
