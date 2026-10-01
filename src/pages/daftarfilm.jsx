@@ -45,7 +45,21 @@ export const moviesData = [
   }
 ];
 
-//sudah di deploy di vercel?
+// Helper untuk memastikan URL berformat Embed untuk Lightbox/Player Video
+const getEmbedUrl = (url) => {
+  if (!url) return '';
+  if (url.includes('youtube.com/embed/')) return url;
+
+  let videoId = '';
+  if (url.includes('youtu.be/')) {
+    videoId = url.split('youtu.be/')[1]?.split('?')[0];
+  } else if (url.includes('youtube.com/watch')) {
+    const urlParams = new URLSearchParams(url.split('?')[1]);
+    videoId = urlParams.get('v');
+  }
+
+  return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+};
 
 export default function DaftarFilm() {
   const [films, setFilms] = useState([]);
@@ -53,7 +67,6 @@ export default function DaftarFilm() {
   const [activeVideo, setActiveVideo] = useState(null);
 
   useEffect(() => {
-    // Ambil data film dari API backend
     fetch('/api/films?full=true')
       .then((res) => {
         if (!res.ok) throw new Error('Gagal mengambil data dari server');
@@ -94,20 +107,17 @@ export default function DaftarFilm() {
           const filmTitle = film.judul || film.title;
           const filmImage = film.gambar || film.image;
           const filmGenre = film.genre || 'Film';
-          const filmTrailer = film.trailer || film.trailerEmbed;
+          const rawTrailer = film.trailer || film.trailerEmbed;
+          // Mengubah ke URL Embed khusus untuk diputar di Lightbox Modal
+          const embedTrailer = getEmbedUrl(rawTrailer);
 
           return (
             <div key={filmId} className="movie-card">
-              {/* Mengklik gambar akan membuka player video */}
               <div 
                 style={{ position: 'relative', cursor: 'pointer' }}
-                onClick={() => setActiveVideo({ trailerEmbed: filmTrailer, title: filmTitle })}
+                onClick={() => setActiveVideo({ trailerEmbed: embedTrailer, title: filmTitle })}
               >
-                <img 
-                  src={filmImage} 
-                  alt={filmTitle} 
-                />
-                {/* Overlay ikon play */}
+                <img src={filmImage} alt={filmTitle} />
                 <div style={{
                   position: 'absolute',
                   top: '50%',
@@ -139,7 +149,6 @@ export default function DaftarFilm() {
         })}
       </div>
 
-      {/* Pop-up Modal Lightbox Video */}
       <Lightbox 
         isOpen={Boolean(activeVideo)} 
         onClose={() => setActiveVideo(null)}

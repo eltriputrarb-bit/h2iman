@@ -2,6 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { moviesData } from './daftarfilm';
 
+// Helper untuk mengubah URL Embed menjadi URL YouTube biasa jika tersimpan sebagai embed
+const getDirectYoutubeUrl = (url) => {
+  if (!url) return '';
+  if (url.includes('youtube.com/embed/')) {
+    const videoId = url.split('youtube.com/embed/')[1]?.split('?')[0];
+    return videoId ? `https://www.youtube.com/watch?v=${videoId}` : url;
+  }
+  return url;
+};
+
 export default function DetailFilm() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -71,7 +81,6 @@ export default function DetailFilm() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simpan data link YouTube langsung tanpa dikonversi ke Embed
     const filmData = { 
       judul, 
       gambar: gambarUrl, 
@@ -126,7 +135,7 @@ export default function DetailFilm() {
     );
   }
 
-  // TAMPILAN DASHBOARD ADMIN
+  // TAMPILAN ADMIN (FORM EDIT)
   if (isAdmin) {
     return (
       <div className="detail-container" style={{ padding: '2rem', maxWidth: '600px', margin: '0 auto', color: '#fff' }}>
@@ -187,7 +196,9 @@ export default function DetailFilm() {
     );
   }
 
-  // TAMPILAN PENGUNJUNG BERANDA
+  // TAMPILAN PENGUNJUNG BERANDA (Menggunakan Link Langsung ke YouTube, Tanpa Embed)
+  const directUrl = getDirectYoutubeUrl(trailerLink);
+
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#121212', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
       <div style={{ position: 'relative', width: '100%', maxWidth: '750px', backgroundColor: '#181818', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.8)', color: '#ffffff', fontFamily: 'sans-serif' }}>
@@ -217,10 +228,10 @@ export default function DetailFilm() {
 
           <p style={{ color: '#cccccc', lineHeight: '1.6', fontSize: '1rem', marginBottom: '2rem' }}>{deskripsi || 'Belum ada deskripsi untuk film ini.'}</p>
 
-          {/* Mengarahkan langsung ke URL YouTube saat tombol diklik */}
-          {trailerLink ? (
+          {/* Mengarahkan langsung ke YouTube tanpa Embed */}
+          {directUrl ? (
             <a 
-              href={trailerLink} 
+              href={directUrl} 
               target="_blank" 
               rel="noreferrer" 
               style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#e50914', color: '#ffffff', padding: '0.8rem 1.8rem', borderRadius: '6px', textDecoration: 'none', fontWeight: 'bold', fontSize: '1.1rem' }}
