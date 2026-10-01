@@ -17,7 +17,6 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'GET') {
-      // 1. Ambil 1 Film Lengkap berdasarkan ID (untuk Halaman Detail)
       if (id) {
         if (!mongoose.Types.ObjectId.isValid(id)) {
           return res.status(404).json({ message: 'ID tidak valid atau merupakan film dummy' });
@@ -28,15 +27,12 @@ export default async function handler(req, res) {
         return res.status(200).json(film);
       }
 
-      // 2. Ambil Semua Film
       const films = await Film.find().sort({ createdAt: -1 });
 
-      // ── KUNCI FIX: Jika aplikasi React mengirim ?full=true, langsung kirim data asli MongoDB ──
       if (full === 'true') {
         return res.status(200).json(films);
       }
 
-      // Jika dibuka di browser biasa tanpa parameter (/api/films), samarkan informasinya
       const cleanedFilms = films.map((f) => {
         const obj = f.toObject();
 
@@ -58,8 +54,16 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'POST') {
-      const { judul, gambar, trailer, deskripsi } = req.body;
-      const newFilm = new Film({ judul, gambar, trailer, deskripsi });
+      const { judul, gambar, trailer, deskripsi, tahun, rating, kategori } = req.body;
+      const newFilm = new Film({ 
+        judul, 
+        gambar, 
+        trailer, 
+        deskripsi, 
+        tahun, 
+        rating, 
+        kategori 
+      });
       await newFilm.save();
       return res.status(201).json(newFilm);
     }
@@ -71,10 +75,10 @@ export default async function handler(req, res) {
         return res.status(400).json({ message: 'ID MongoDB tidak valid' });
       }
 
-      const { judul, gambar, trailer, deskripsi } = req.body;
+      const { judul, gambar, trailer, deskripsi, tahun, rating, kategori } = req.body;
       const updatedFilm = await Film.findByIdAndUpdate(
         id,
-        { judul, gambar, trailer, deskripsi },
+        { judul, gambar, trailer, deskripsi, tahun, rating, kategori },
         { new: true }
       );
       if (!updatedFilm) return res.status(404).json({ message: 'Film tidak ditemukan' });
