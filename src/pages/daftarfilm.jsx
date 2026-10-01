@@ -47,6 +47,17 @@ export const moviesData = [
     description: "alone   ",
     trailerEmbed: "https://www.youtube.com/embed/rn1UFjNMAxA?si=lCFEQc4x3OWOF1xV"
   },
+  {
+    id: '5',
+    title: "fast and furious",
+    genre: "???",
+    // 1. Gambar dari folder public/images/puji-syukur.jpg
+    image: "/images/ptc.jpg",
+    // ATAU 2. URL langsung ke file .jpg di internet:
+    // image: "https://example.com/poster-puji-syukur.jpg",
+    description: "ptc",
+    trailerEmbed: "https://www.youtube.com/embed/0Xy9fh1G4z8?si=0yep3ZL55_d7jHwq"
+  }
 ];
 
 export default function DaftarFilm() {
