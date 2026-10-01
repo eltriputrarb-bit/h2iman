@@ -54,7 +54,7 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'POST') {
-      const { judul, gambar, trailer, deskripsi, tahun, rating, kategori } = req.body;
+      const { judul, gambar, trailer, deskripsi, tahun, rating, kategori, bintang } = req.body;
       const newFilm = new Film({ 
         judul, 
         gambar, 
@@ -62,7 +62,8 @@ export default async function handler(req, res) {
         deskripsi, 
         tahun, 
         rating, 
-        kategori 
+        kategori,
+        bintang: Number(bintang) || 5
       });
       await newFilm.save();
       return res.status(201).json(newFilm);
@@ -75,10 +76,10 @@ export default async function handler(req, res) {
         return res.status(400).json({ message: 'ID MongoDB tidak valid' });
       }
 
-      const { judul, gambar, trailer, deskripsi, tahun, rating, kategori } = req.body;
+      const { judul, gambar, trailer, deskripsi, tahun, rating, kategori, bintang } = req.body;
       const updatedFilm = await Film.findByIdAndUpdate(
         id,
-        { judul, gambar, trailer, deskripsi, tahun, rating, kategori },
+        { judul, gambar, trailer, deskripsi, tahun, rating, kategori, bintang: Number(bintang) || 5 },
         { new: true }
       );
       if (!updatedFilm) return res.status(404).json({ message: 'Film tidak ditemukan' });
