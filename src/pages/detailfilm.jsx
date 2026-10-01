@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { moviesData } from './daftarfilm';
 
-// Helper untuk mengubah URL Embed menjadi URL YouTube biasa jika tersimpan sebagai embed
+// Helper untuk memastikan URL langsung (non-embed)
 const getDirectYoutubeUrl = (url) => {
   if (!url) return '';
   if (url.includes('youtube.com/embed/')) {
@@ -20,10 +20,17 @@ export default function DetailFilm() {
   const isAdmin = location.state?.from === '/admin';
   const fromPage = location.state?.from || -1;
 
+  // State Form Film
   const [judul, setJudul] = useState('');
   const [gambarUrl, setGambarUrl] = useState('');
   const [trailerLink, setTrailerLink] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
+
+  // State Dinamis untuk Tag / Meta Film
+  const [tahun, setTahun] = useState('2026');
+  const [rating, setRating] = useState('13+');
+  const [kategori, setKategori] = useState('Film');
+
   const [loading, setLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -44,6 +51,10 @@ export default function DetailFilm() {
               setGambarUrl(apiFilm.gambar || apiFilm.image || '');
               setDeskripsi(apiFilm.deskripsi || apiFilm.description || '');
               setTrailerLink(apiFilm.trailer || apiFilm.trailerEmbed || '');
+              // Fetch tag dinamis
+              setTahun(apiFilm.tahun || '2026');
+              setRating(apiFilm.rating || '13+');
+              setKategori(apiFilm.kategori || apiFilm.genre || 'Film');
             }
             setLoading(false);
           })
@@ -58,6 +69,9 @@ export default function DetailFilm() {
           setGambarUrl(localFilm.image || localFilm.gambar || '');
           setDeskripsi(localFilm.description || localFilm.deskripsi || '');
           setTrailerLink(localFilm.trailerEmbed || localFilm.trailer || '');
+          setTahun(localFilm.tahun || '2026');
+          setRating(localFilm.rating || '13+');
+          setKategori(localFilm.kategori || localFilm.genre || 'Film');
         }
         setLoading(false);
       }
@@ -81,11 +95,15 @@ export default function DetailFilm() {
     e.preventDefault();
     setIsSubmitting(true);
 
+    // Menyertakan field tag dinamis
     const filmData = { 
       judul, 
       gambar: gambarUrl, 
       trailer: trailerLink, 
-      deskripsi 
+      deskripsi,
+      tahun,
+      rating,
+      kategori
     };
 
     const isValidMongoId = id && /^[0-9a-fA-F]{24}$/.test(id);
@@ -129,117 +147,144 @@ export default function DetailFilm() {
 
   if (loading) {
     return (
-      <div style={{ textAlign: 'center', color: '#fff', paddingTop: '3rem' }}>
-        <p>Memuat detail film...</p>
+      <div className="detail-page-wrapper">
+        <p style={{ color: '#fff' }}>Memuat detail film...</p>
       </div>
     );
   }
 
-  // TAMPILAN ADMIN (FORM EDIT)
+  // TAMPILAN FORM EDIT ADMIN
   if (isAdmin) {
     return (
-      <div className="detail-container" style={{ padding: '2rem', maxWidth: '600px', margin: '0 auto', color: '#fff' }}>
-        <div className="detail-header" style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between' }}>
-          <button onClick={handleClose} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', fontSize: '1rem' }}>
-            &larr; Kembali ke Dashboard
-          </button>
-          <h2>{id ? `Edit: ${judul}` : 'Tambah Film Baru'}</h2>
+      <div className="detail-page-wrapper">
+        <div className="detail-card" style={{ padding: '2rem' }}>
+          <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between' }}>
+            <button onClick={handleClose} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer' }}>
+              &larr; Kembali ke Dashboard
+            </button>
+            <h2>{id ? `Edit: ${judul}` : 'Tambah Film Baru'}</h2>
+          </div>
+
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div>
+              <label style={{ display: 'block', marginBottom: '0.5rem' }}>Judul Film</label>
+              <input
+                type="text"
+                value={judul}
+                onChange={(e) => setJudul(e.target.value)}
+                style={{ width: '100%', padding: '0.8rem', borderRadius: '4px', border: '1px solid #444', background: '#222', color: '#fff' }}
+                required
+              />
+            </div>
+
+            {/* Field Input untuk Tag Dinamis */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem' }}>Tahun</label>
+                <input
+                  type="text"
+                  placeholder="2026"
+                  value={tahun}
+                  onChange={(e) => setTahun(e.target.value)}
+                  style={{ width: '100%', padding: '0.8rem', borderRadius: '4px', border: '1px solid #444', background: '#222', color: '#fff' }}
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem' }}>Rating Usia</label>
+                <input
+                  type="text"
+                  placeholder="13+"
+                  value={rating}
+                  onChange={(e) => setRating(e.target.value)}
+                  style={{ width: '100%', padding: '0.8rem', borderRadius: '4px', border: '1px solid #444', background: '#222', color: '#fff' }}
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem' }}>Kategori / Genre</label>
+                <input
+                  type="text"
+                  placeholder="Film / Action"
+                  value={kategori}
+                  onChange={(e) => setKategori(e.target.value)}
+                  style={{ width: '100%', padding: '0.8rem', borderRadius: '4px', border: '1px solid #444', background: '#222', color: '#fff' }}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label style={{ display: 'block', marginBottom: '0.5rem' }}>Upload Gambar Poster</label>
+              <input type="file" accept="image/*" onChange={handleImageChange} style={{ color: '#fff' }} />
+            </div>
+
+            <div>
+              <label style={{ display: 'block', marginBottom: '0.5rem' }}>Link Trailer YouTube</label>
+              <input
+                type="text"
+                placeholder="Tempelkan link YouTube di sini"
+                value={trailerLink}
+                onChange={(e) => setTrailerLink(e.target.value)}
+                style={{ width: '100%', padding: '0.8rem', borderRadius: '4px', border: '1px solid #444', background: '#222', color: '#fff' }}
+              />
+            </div>
+
+            <div>
+              <label style={{ display: 'block', marginBottom: '0.5rem' }}>Deskripsi Film</label>
+              <textarea
+                rows="4"
+                value={deskripsi}
+                onChange={(e) => setDeskripsi(e.target.value)}
+                style={{ width: '100%', padding: '0.8rem', borderRadius: '4px', border: '1px solid #444', background: '#222', color: '#fff' }}
+              />
+            </div>
+
+            <button type="submit" disabled={isSubmitting} className="detail-start-btn">
+              {isSubmitting ? 'Menyimpan...' : 'Simpan Perubahan'}
+            </button>
+          </form>
         </div>
-
-        <form onSubmit={handleSubmit} className="detail-form" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem' }}>Judul Film</label>
-            <input
-              type="text"
-              value={judul}
-              onChange={(e) => setJudul(e.target.value)}
-              style={{ width: '100%', padding: '0.8rem', borderRadius: '4px', border: '1px solid #444', background: '#222', color: '#fff' }}
-              required
-            />
-          </div>
-
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem' }}>Upload Gambar Poster</label>
-            <input type="file" accept="image/*" onChange={handleImageChange} style={{ color: '#fff' }} />
-          </div>
-
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem' }}>Link Trailer YouTube</label>
-            <input
-              type="text"
-              placeholder="Tempelkan link YouTube di sini"
-              value={trailerLink}
-              onChange={(e) => setTrailerLink(e.target.value)}
-              style={{ width: '100%', padding: '0.8rem', borderRadius: '4px', border: '1px solid #444', background: '#222', color: '#fff' }}
-            />
-          </div>
-
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem' }}>Deskripsi Film</label>
-            <textarea
-              rows="4"
-              value={deskripsi}
-              onChange={(e) => setDeskripsi(e.target.value)}
-              style={{ width: '100%', padding: '0.8rem', borderRadius: '4px', border: '1px solid #444', background: '#222', color: '#fff' }}
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            style={{ padding: '0.8rem', borderRadius: '4px', border: 'none', background: '#e50914', color: '#fff', fontWeight: 'bold', cursor: 'pointer' }}
-          >
-            {isSubmitting ? 'Menyimpan...' : 'Simpan Perubahan'}
-          </button>
-        </form>
       </div>
     );
   }
 
-  // TAMPILAN PENGUNJUNG BERANDA (Menggunakan Link Langsung ke YouTube, Tanpa Embed)
+  // TAMPILAN PENGUNJUNG (TAG DINAMIS)
   const directUrl = getDirectYoutubeUrl(trailerLink);
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#121212', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
-      <div style={{ position: 'relative', width: '100%', maxWidth: '750px', backgroundColor: '#181818', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.8)', color: '#ffffff', fontFamily: 'sans-serif' }}>
-        <button onClick={handleClose} style={{ position: 'absolute', top: '16px', right: '16px', zIndex: 10, background: 'rgba(0,0,0,0.6)', border: 'none', color: '#fff', fontSize: '1.2rem', width: '36px', height: '36px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div className="detail-page-wrapper">
+      <div className="detail-card">
+        <button className="detail-close-btn" onClick={handleClose}>
           ✕
         </button>
 
-        <div style={{ position: 'relative', width: '100%', height: '380px', backgroundColor: '#000' }}>
+        <div className="detail-poster-wrapper">
           {gambarUrl ? (
-            <img src={gambarUrl} alt={judul} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src={gambarUrl} alt={judul} className="detail-poster-img" />
           ) : (
-            <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="detail-no-image">
               <span>Tidak Ada Gambar Poster</span>
             </div>
           )}
-          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '120px', background: 'linear-gradient(to top, #181818, transparent)' }} />
+          <div className="detail-poster-overlay" />
         </div>
 
-        <div style={{ padding: '1.5rem 2rem 2.5rem 2rem' }}>
-          <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', margin: '0 0 1rem 0' }}>{judul || 'Judul Film'}</h1>
+        <div className="detail-content">
+          <h1 className="detail-title">{judul || 'Judul Film'}</h1>
 
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '1.2rem', flexWrap: 'wrap' }}>
-            <span style={{ background: '#333', padding: '4px 8px', borderRadius: '4px', fontSize: '0.85rem' }}>2026</span>
-            <span style={{ background: '#333', padding: '4px 8px', borderRadius: '4px', fontSize: '0.85rem' }}>13+</span>
-            <span style={{ background: '#333', padding: '4px 8px', borderRadius: '4px', fontSize: '0.85rem' }}>Film</span>
+          {/* Menampilkan Tag secara Dinamis */}
+          <div className="detail-tags">
+            <span className="detail-tag">{tahun || '2026'}</span>
+            <span className="detail-tag">{rating || '13+'}</span>
+            <span className="detail-tag">{kategori || 'Film'}</span>
           </div>
 
-          <p style={{ color: '#cccccc', lineHeight: '1.6', fontSize: '1rem', marginBottom: '2rem' }}>{deskripsi || 'Belum ada deskripsi untuk film ini.'}</p>
+          <p className="detail-description">{deskripsi || 'Belum ada deskripsi untuk film ini.'}</p>
 
-          {/* Mengarahkan langsung ke YouTube tanpa Embed */}
           {directUrl ? (
-            <a 
-              href={directUrl} 
-              target="_blank" 
-              rel="noreferrer" 
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#e50914', color: '#ffffff', padding: '0.8rem 1.8rem', borderRadius: '6px', textDecoration: 'none', fontWeight: 'bold', fontSize: '1.1rem' }}
-            >
+            <a href={directUrl} target="_blank" rel="noreferrer" className="detail-start-btn">
               Mulai &gt;
             </a>
           ) : (
-            <button disabled style={{ backgroundColor: '#555', color: '#888', padding: '0.8rem 1.8rem', borderRadius: '6px', border: 'none', fontWeight: 'bold', fontSize: '1.1rem', cursor: 'not-allowed' }}>
+            <button disabled className="detail-start-btn disabled">
               Mulai &gt;
             </button>
           )}

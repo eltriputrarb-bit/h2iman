@@ -7,6 +7,9 @@ export const moviesData = [
     id: '1',
     title: "pacrifim",
     genre: "Action / Sci-Fi",
+    tahun: "2026",
+    rating: "13+",
+    kategori: "Film",
     image: "/images/robot.jpg", 
     description: "robot",
     trailerEmbed: "https://www.youtube.com/embed/GUO2RjbaPnc?si=RjCx5soztIi2rcOp"
@@ -15,6 +18,9 @@ export const moviesData = [
     id: '2',
     title: "insterstellar",
     genre: "Action / Sci-Fi",
+    tahun: "2014",
+    rating: "13+",
+    kategori: "Film",
     image: "/images/polz.jpg", 
     description: "bumi",
     trailerEmbed: "https://www.youtube.com/embed/zSWdZVtXT7E"
@@ -23,6 +29,9 @@ export const moviesData = [
     id: '3',
     title: "itu saya",
     genre: "SCHOSL",
+    tahun: "2025",
+    rating: "SU",
+    kategori: "Film",
     image: "/images/katolik.jpg",
     description: "sad",
     trailerEmbed: "https://www.youtube.com/embed/mFea21VooJ4?si=VoEYqrxRgTxvogs8"
@@ -31,6 +40,9 @@ export const moviesData = [
     id: '4',
     title: "Doraemon",
     genre: "Animation / Family",
+    tahun: "2020",
+    rating: "SU",
+    kategori: "Film",
     image: "/images/doraemon.jpg",
     description: "alone",
     trailerEmbed: "https://www.youtube.com/embed/rn1UFjNMAxA?si=lCFEQc4x3OWOF1xV"
@@ -38,14 +50,16 @@ export const moviesData = [
   {
     id: '5',
     title: "fast and furious",
-    genre: "???",
+    genre: "Action",
+    tahun: "2021",
+    rating: "17+",
+    kategori: "Film",
     image: "/images/ptc.jpg",
     description: "ptc",
     trailerEmbed: "https://www.youtube.com/embed/0Xy9fh1G4z8?si=0yep3ZL55_d7jHwq"
   }
 ];
 
-// Helper untuk memastikan URL berformat Embed untuk Lightbox/Player Video
 const getEmbedUrl = (url) => {
   if (!url) return '';
   if (url.includes('youtube.com/embed/')) return url;
@@ -106,9 +120,8 @@ export default function DaftarFilm() {
           const filmId = film._id || film.id;
           const filmTitle = film.judul || film.title;
           const filmImage = film.gambar || film.image;
-          const filmGenre = film.genre || 'Film';
+          const filmGenre = film.kategori || film.genre || 'Film';
           const rawTrailer = film.trailer || film.trailerEmbed;
-          // Mengubah ke URL Embed khusus untuk diputar di Lightbox Modal
           const embedTrailer = getEmbedUrl(rawTrailer);
 
           return (
