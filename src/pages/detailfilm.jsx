@@ -2,28 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { moviesData } from './daftarfilm';
 
-// Fungsi otomatis mengubah URL YouTube biasa/share menjadi link embed
-const formatYoutubeEmbedUrl = (url) => {
-  if (!url) return '';
-  
-  // Jika sudah format embed, kembalikan langsung
-  if (url.includes('youtube.com/embed/')) return url;
-
-  let videoId = '';
-
-  // Format: https://youtu.be/yLFRQaQT0qM
-  if (url.includes('youtu.be/')) {
-    videoId = url.split('youtu.be/')[1]?.split('?')[0];
-  } 
-  // Format: https://www.youtube.com/watch?v=yLFRQaQT0qM
-  else if (url.includes('youtube.com/watch')) {
-    const urlParams = new URLSearchParams(url.split('?')[1]);
-    videoId = urlParams.get('v');
-  }
-
-  return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
-};
-
 export default function DetailFilm() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -93,13 +71,11 @@ export default function DetailFilm() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Otomatis ubah format trailer ke link Embed sebelum dikirim ke Database
-    const cleanTrailerUrl = formatYoutubeEmbedUrl(trailerLink);
-
+    // Simpan data link YouTube langsung tanpa dikonversi ke Embed
     const filmData = { 
       judul, 
       gambar: gambarUrl, 
-      trailer: cleanTrailerUrl, 
+      trailer: trailerLink, 
       deskripsi 
     };
 
@@ -182,7 +158,7 @@ export default function DetailFilm() {
             <label style={{ display: 'block', marginBottom: '0.5rem' }}>Link Trailer YouTube</label>
             <input
               type="text"
-              placeholder="Contoh: https://youtu.be/yLFRQaQT0qM"
+              placeholder="Tempelkan link YouTube di sini"
               value={trailerLink}
               onChange={(e) => setTrailerLink(e.target.value)}
               style={{ width: '100%', padding: '0.8rem', borderRadius: '4px', border: '1px solid #444', background: '#222', color: '#fff' }}
@@ -241,8 +217,14 @@ export default function DetailFilm() {
 
           <p style={{ color: '#cccccc', lineHeight: '1.6', fontSize: '1rem', marginBottom: '2rem' }}>{deskripsi || 'Belum ada deskripsi untuk film ini.'}</p>
 
+          {/* Mengarahkan langsung ke URL YouTube saat tombol diklik */}
           {trailerLink ? (
-            <a href={trailerLink} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#e50914', color: '#ffffff', padding: '0.8rem 1.8rem', borderRadius: '6px', textDecoration: 'none', fontWeight: 'bold', fontSize: '1.1rem' }}>
+            <a 
+              href={trailerLink} 
+              target="_blank" 
+              rel="noreferrer" 
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#e50914', color: '#ffffff', padding: '0.8rem 1.8rem', borderRadius: '6px', textDecoration: 'none', fontWeight: 'bold', fontSize: '1.1rem' }}
+            >
               Mulai &gt;
             </a>
           ) : (
