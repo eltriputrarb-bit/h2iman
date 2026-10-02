@@ -46,7 +46,7 @@ export default function DetailFilm() {
       stars.push(
         <span 
           key={i} 
-          style={{ color: i <= starCount ? '#ffd700' : '#444', fontSize: '1.2rem', marginRight: '3px' }}
+          className={`star-icon ${i <= starCount ? 'active' : ''}`}
         >
           ★
         </span>
@@ -57,19 +57,21 @@ export default function DetailFilm() {
 
   if (loading) {
     return (
-      <div className="page-container" style={{ textAlign: 'center', color: '#fff', padding: '2rem 1rem' }}>
-        <p>Memuat detail film...</p>
+      <div className="detail-page-wrapper">
+        <p className="loading-text">Memuat detail film...</p>
       </div>
     );
   }
 
   if (!film) {
     return (
-      <div className="page-container" style={{ textAlign: 'center', color: '#fff', padding: '2rem 1rem' }}>
-        <h2>Film Tidak Ditemukan</h2>
-        <Link to="/" className="detail-btn" style={{ display: 'inline-block', marginTop: '1rem' }}>
-          &lt; Kembali ke Beranda
-        </Link>
+      <div className="detail-page-wrapper">
+        <div className="detail-card" style={{ padding: '2rem', textAlign: 'center' }}>
+          <h2 style={{ color: '#fff' }}>Film Tidak Ditemukan</h2>
+          <Link to="/" className="watch-trailer-btn" style={{ marginTop: '1rem', display: 'inline-block' }}>
+            Kembali ke Beranda
+          </Link>
+        </div>
       </div>
     );
   }
@@ -77,14 +79,16 @@ export default function DetailFilm() {
   const embedUrl = getEmbedUrl(film.trailer);
 
   return (
-    <div className="page-container detail-page-wrapper">
+    <div className="detail-page-wrapper">
       <Link to="/" className="back-link">
         &lt; Kembali
       </Link>
 
       <div className="detail-card">
+        {/* Gambar Poster tunggal yang akan terisi penuh rapi di sebelah kiri */}
         <div className="detail-poster-wrapper">
           <img src={film.gambar} alt={film.judul} className="detail-poster" />
+          <div className="detail-poster-overlay"></div>
         </div>
 
         <div className="detail-info">
@@ -117,7 +121,7 @@ export default function DetailFilm() {
 
       <Lightbox 
         isOpen={isTrailerOpen} 
-        onClose={() => setIsTrailerOpen(null)} 
+        onClose={() => setIsTrailerOpen(false)} 
         videoUrl={embedUrl} 
         title={film.judul}
       />
