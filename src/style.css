@@ -1187,7 +1187,7 @@ body {
 }
 
 /* ==========================================
-   ADMIN LAYOUT WITH SIDEBAR & ANIMATIONS
+   ADMIN LAYOUT & BASE STYLES
    ========================================== */
 
 .admin-layout {
@@ -1199,7 +1199,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Header Khusus Mobile (Disembunyikan di Desktop) */
+/* Header & Close Button Khusus Mobile (Disembunyikan di Desktop) */
 .mobile-header {
   display: none;
 }
@@ -1276,12 +1276,12 @@ body {
   transform: translateX(4px);
 }
 
-/* Main Content Area (Fix Flexbox WebKit Bug) */
+/* Main Content Area */
 .admin-content {
   flex: 1;
   padding: 2rem;
   overflow-y: auto;
-  min-width: 0; /* KRUSIAL: Mencegah layout collapse di WebKit/Safari */
+  min-width: 0; /* Mengatasi WebKit/Safari Flexbox collapse bug */
   width: 100%;
   box-sizing: border-box;
 }
@@ -1398,7 +1398,7 @@ body {
   border-radius: 6px;
   font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
+  transition: background-color 0.2s;
 }
 
 .submit-btn:hover:not(:disabled) {
@@ -1421,7 +1421,7 @@ body {
 }
 
 /* ==========================================
-   TABEL DATA (FIX RESPONSIVE & VISIBILITY)
+   TABEL DATA FILM
    ========================================== */
 
 .admin-table-wrapper {
@@ -1467,7 +1467,7 @@ body {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  min-width: 550px; /* Scrollable horizontal di mobile */
+  min-width: 500px;
 }
 
 .admin-table th,
@@ -1547,7 +1547,7 @@ body {
     width: 100%;
   }
 
-  /* Header Mobile */
+  /* Header Mobile Topbar */
   .mobile-header {
     display: flex;
     align-items: center;
