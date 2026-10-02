@@ -1324,3 +1324,17 @@ body {
     grid-template-columns: 1fr; /* Form jadi 1 kolom di HP */
   }
 }
+
+/* Menjaga poster agar selalu memenuhi container kiri dan tidak menumpuk */
+.detail-poster-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* Jika ada elemen img ganda yang muncul tidak sengaja, sembunyikan gambar kedua */
+.detail-poster-wrapper img:nth-of-type(n+2) {
+  display: none !important;
+}
