@@ -456,3 +456,17 @@
     color: #888;
   }
 }
+/* Logo */
+.adm-mobile-logo,
+.adm-sidebar-logo h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.adm-logo-img {
+  height: 32px;
+  width: auto;
+  border-radius: 6px;
+  object-fit: contain;
+}

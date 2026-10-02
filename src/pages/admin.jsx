@@ -149,7 +149,10 @@ export default function Admin() {
         >
           ☰
         </button>
-        <h2 className="adm-mobile-logo">🎬 Film Logo</h2>
+        <h2 className="adm-mobile-logo">
+          <img src="/images/logo.jpg" alt="Film Logo" className="adm-logo-img" />
+          Film Logo
+        </h2>
       </header>
 
       {/* OVERLAY BACKDROP */}
@@ -163,7 +166,10 @@ export default function Admin() {
       {/* SIDEBAR NAVIGATION */}
       <aside className={`adm-admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="adm-sidebar-logo">
-          <h2>🎬 Film Logo</h2>
+          <h2>
+            <img src="/logo.jpg" alt="Film Logo" className="adm-logo-img" />
+            Film Logo
+          </h2>
           <button 
             className="adm-close-sidebar-btn" 
             onClick={() => setSidebarOpen(false)}
@@ -404,4 +410,4 @@ export default function Admin() {
       </main>
     </div>
   );
-}
+}     
