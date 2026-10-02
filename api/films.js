@@ -55,6 +55,12 @@ export default async function handler(req, res) {
 
     if (req.method === 'POST') {
       const { judul, gambar, trailer, deskripsi, tahun, rating, kategori, bintang } = req.body;
+      
+      // Validasi penanganan nilai bintang agar tidak dipaksa ke default 5
+      const starValue = (bintang !== undefined && bintang !== null && !isNaN(Number(bintang))) 
+        ? Number(bintang) 
+        : 5;
+
       const newFilm = new Film({ 
         judul, 
         gambar, 
@@ -63,7 +69,7 @@ export default async function handler(req, res) {
         tahun, 
         rating, 
         kategori,
-        bintang: Number(bintang) || 5
+        bintang: starValue
       });
       await newFilm.save();
       return res.status(201).json(newFilm);
@@ -77,9 +83,24 @@ export default async function handler(req, res) {
       }
 
       const { judul, gambar, trailer, deskripsi, tahun, rating, kategori, bintang } = req.body;
+      
+      // Validasi penanganan nilai bintang saat update
+      const starValue = (bintang !== undefined && bintang !== null && !isNaN(Number(bintang))) 
+        ? Number(bintang) 
+        : 5;
+
       const updatedFilm = await Film.findByIdAndUpdate(
         id,
-        { judul, gambar, trailer, deskripsi, tahun, rating, kategori, bintang: Number(bintang) || 5 },
+        { 
+          judul, 
+          gambar, 
+          trailer, 
+          deskripsi, 
+          tahun, 
+          rating, 
+          kategori, 
+          bintang: starValue 
+        },
         { new: true }
       );
       if (!updatedFilm) return res.status(404).json({ message: 'Film tidak ditemukan' });
