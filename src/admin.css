@@ -365,7 +365,7 @@
 }
 
 /* ==========================================
-   MOBILE & TABLET DRAWER (IPHONE & ANDROID FIX)
+   MOBILE & TABLET DRAWER (FIX TAMPILAN HP)
    ========================================== */
 
 @media (max-width: 768px) {
@@ -454,14 +454,16 @@
     color: #ffffff;
   }
 
-  /* Area Utama Konten Mobile (Fix Layar Kosong) */
+  /* Area Utama Konten Mobile */
   .admin-content {
-    flex: 1 1 auto;
+    flex: 1 0 auto;
     display: block;
     padding: 1rem 0.8rem;
     width: 100%;
     min-width: 0;
     box-sizing: border-box;
+    position: relative;
+    z-index: 1;
   }
 
   .admin-table-wrapper {
