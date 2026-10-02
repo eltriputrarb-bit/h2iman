@@ -917,7 +917,7 @@ body {
   animation: overlayFadeIn 0.3s ease-out forwards;
 }
 
-/* Kartu Utama Modal dengan Animasi Pop-Up & Card Layout Vertikal */
+/* Kartu Utama Modal */
 .detail-card {
   position: relative;
   width: 100%;
@@ -932,7 +932,7 @@ body {
   max-height: 90vh;
   overflow-y: auto;
   box-sizing: border-box;
-  -webkit-overflow-scrolling: touch; /* Momentum scrolling halus di iPhone */
+  -webkit-overflow-scrolling: touch; /* Momentum scrolling di iPhone */
   animation: cardPopUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -1049,22 +1049,28 @@ body {
   color: #e0e0e0;
 }
 
-/* Rating Bintang */
+/* ==========================================
+   RATING BINTANG SKETSA (OUTLINE / HOLLOW STAR)
+   ========================================== */
+
 .detail-rating,
 .stars-container {
   display: flex;
   align-items: center;
+  gap: 4px;
 }
 
 .star-icon {
-  color: #444444;
-  font-size: 1.2rem;
-  margin-right: 2px;
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
 }
 
+/* Bintang Aktif Mengikuti Gaya Sketsa Kertas */
 .star-icon.active {
-  color: #ffd700;
-  filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.4));
+  color: transparent;
+  -webkit-text-stroke: 1.5px #ffffff; /* Efek garis outline bintang */
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.6));
 }
 
 /* Deskripsi Teks */
@@ -1075,37 +1081,41 @@ body {
   margin: 0;
 }
 
-/* Tombol Mulai Merah Khas Streaming */
+/* ==========================================
+   TOMBOL MULAI SKETSA (OUTLINE ROUNDED BUTTON)
+   ========================================== */
+
 .watch-trailer-btn,
 .detail-start-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: #e50914;
+  background-color: transparent;
   color: #ffffff;
-  padding: 0.75rem 2rem;
-  font-size: 1rem;
-  font-weight: 700;
-  border-radius: 6px;
+  padding: 0.65rem 1.8rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border-radius: 10px; /* Sudut melengkung halus sesuai gambar kertas */
+  border: 2px solid #ffffff; /* Garis bingkai tebal sesuai gambar kertas */
   text-decoration: none;
-  border: none;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   width: fit-content;
-  box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
-  margin-top: 8px;
+  margin-top: 10px;
+  box-sizing: border-box;
 }
 
 .watch-trailer-btn:hover,
 .detail-start-btn:hover {
-  background-color: #f6121d;
-  transform: scale(1.03);
-  box-shadow: 0 6px 20px rgba(229, 9, 20, 0.6);
+  background-color: #ffffff;
+  color: #000000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.25);
 }
 
 .watch-trailer-btn:active,
 .detail-start-btn:active {
-  transform: scale(0.98);
+  transform: translateY(0) scale(0.98);
 }
 
 /* ==========================================
@@ -1170,8 +1180,8 @@ body {
 
   .watch-trailer-btn,
   .detail-start-btn {
-    width: 100%; /* Memenuhi lebar layar HP */
-    padding: 0.85rem;
+    width: 100%;
+    padding: 0.8rem;
     font-size: 1.05rem;
   }
 }
@@ -1187,7 +1197,6 @@ body {
 .detail-poster-wrapper img:nth-of-type(n+2) {
   display: none !important;
 }
-
 /* ==========================================
    ADMIN PANEL STYLES
    ========================================== */
