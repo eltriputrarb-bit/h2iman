@@ -1085,14 +1085,13 @@ body {
 }
 
 .star-icon {
-  color: #444444;
-  font-size: 1.5rem;
+  color: #444444; /* Warna abu-abu untuk bintang mati / tidak aktif */
+  font-size: 1.3rem;
   margin-right: 2px;
-  transition: color 0.2s ease;
 }
 
 .star-icon.active {
-  color: #ffd700;
+  color: #ffd700; /* Warna kuning emas untuk bintang aktif */
 }
 
 /* Styling Form Admin */
