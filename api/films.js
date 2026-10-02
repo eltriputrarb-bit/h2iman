@@ -2,10 +2,26 @@ import mongoose from 'mongoose';
 import connectDB from './db.js';
 import Film from './models/Film.js';
 
+const JWT_SECRET = process.env.JWT_SECRET || 'SECRET_KEY_ADMIN_FILM_2026';
+
+// Helper verifikasi token anti-curi di server
+const verifyAdminToken = (req) => {
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return false;
+
+  const token = authHeader.split(' ')[1];
+  try {
+    const decoded = JSON.parse(Buffer.from(token, 'base64').toString('utf-8'));
+    return decoded.secret === JWT_SECRET && Boolean(decoded.username);
+  } catch (err) {
+    return false;
+  }
+};
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -17,31 +33,32 @@ export default async function handler(req, res) {
     return res.status(500).json({ message: 'Gagal terhubung ke database: ' + dbErr.message });
   }
 
-  // Parse query parameter secara aman (baik di Vercel Serverless maupun Express)
   const query = req.query || {};
   const id = query.id || req.body?.id;
   const isFull = query.full === 'true' || query.full === true;
 
   try {
+    // GET: Boleh dibaca, tapi jika minta data full wajib bawa token valid
     if (req.method === 'GET') {
       if (id) {
         if (!mongoose.Types.ObjectId.isValid(id)) {
           return res.status(404).json({ message: 'ID tidak valid' });
         }
-
         const film = await Film.findById(id).lean();
         if (!film) return res.status(404).json({ message: 'Film tidak ditemukan' });
         return res.status(200).json(film);
       }
 
-      // Ambil seluruh daftar film dari MongoDB
       const films = await Film.find().sort({ createdAt: -1 }).lean();
 
       if (isFull) {
+        // Cek Keamanan Token untuk Akses Full Data Admin
+        if (!verifyAdminToken(req)) {
+          return res.status(401).json({ message: 'Akses ditolak! Token tidak valid.' });
+        }
         return res.status(200).json(films);
       }
 
-      // Bersihkan data sensitif jika query full=true tidak disertakan
       const cleanedFilms = films.map((f) => {
         const obj = { ...f };
         if (obj.gambar && obj.gambar.startsWith('data:image')) {
@@ -58,26 +75,23 @@ export default async function handler(req, res) {
       return res.status(200).json(cleanedFilms);
     }
 
+    // WAJIB TERINTEGRASI SECURITY KETAT UNTUK OPERASI UBAH / TAMBAH / HAPUS
+    if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
+      if (!verifyAdminToken(req)) {
+        return res.status(401).json({ message: 'Akses Ditolak! Token Anda tidak sah atau telah kedaluwarsa.' });
+      }
+    }
+
     if (req.method === 'POST') {
       const { judul, gambar, trailer, deskripsi, tahun, rating, kategori, bintang } = req.body || {};
-      
-      if (!judul) {
-        return res.status(400).json({ message: 'Judul film wajib diisi' });
-      }
-
-      const starValue = (bintang !== undefined && bintang !== null && !isNaN(Number(bintang))) 
-        ? Number(bintang) 
-        : 5;
+      if (!judul) return res.status(400).json({ message: 'Judul film wajib diisi' });
 
       const newFilm = new Film({ 
-        judul, 
-        gambar, 
-        trailer, 
-        deskripsi, 
+        judul, gambar, trailer, deskripsi, 
         tahun: tahun || '2026', 
         rating: rating || '13+', 
         kategori: kategori || 'Film',
-        bintang: starValue
+        bintang: Number(bintang) || 5
       });
 
       await newFilm.save();
@@ -85,32 +99,11 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'PUT') {
-      if (!id) return res.status(400).json({ message: 'ID diperlukan' });
-
-      if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ message: 'ID MongoDB tidak valid' });
-      }
+      if (!id || !mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ message: 'ID tidak valid' });
 
       const { judul, gambar, trailer, deskripsi, tahun, rating, kategori, bintang } = req.body || {};
-      
-      const starValue = (bintang !== undefined && bintang !== null && !isNaN(Number(bintang))) 
-        ? Number(bintang) 
-        : 5;
-
-      const updateData = { 
-        judul, 
-        trailer, 
-        deskripsi, 
-        tahun, 
-        rating, 
-        kategori, 
-        bintang: starValue 
-      };
-
-      // Hanya update gambar jika ada payload gambar baru yang dikirim
-      if (gambar) {
-        updateData.gambar = gambar;
-      }
+      const updateData = { judul, trailer, deskripsi, tahun, rating, kategori, bintang: Number(bintang) || 5 };
+      if (gambar) updateData.gambar = gambar;
 
       const updatedFilm = await Film.findByIdAndUpdate(id, updateData, { new: true }).lean();
       if (!updatedFilm) return res.status(404).json({ message: 'Film tidak ditemukan' });
@@ -118,12 +111,7 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'DELETE') {
-      if (!id) return res.status(400).json({ message: 'ID diperlukan' });
-
-      if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ message: 'ID MongoDB tidak valid' });
-      }
-
+      if (!id || !mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ message: 'ID tidak valid' });
       await Film.findByIdAndDelete(id);
       return res.status(200).json({ message: 'Film berhasil dihapus' });
     }
