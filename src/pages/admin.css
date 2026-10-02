@@ -2,16 +2,14 @@
    RESET & BASE STYLES
    ========================================== */
 
-* {
+.adm-admin-layout,
+.adm-admin-layout * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html, body {
-  width: 100%;
-  height: 100%;
-  background-color: #0d0d0d;
+.adm-admin-layout {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   color: #ffffff;
 }
