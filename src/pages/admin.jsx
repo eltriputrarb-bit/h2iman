@@ -1,222 +1,236 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import Lightbox from '../components/Lightbox';
-import { moviesData } from './daftarfilm';
+import React, { useState, useEffect } from 'react';
 
 export default function Admin() {
   const [films, setFilms] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedFilm, setSelectedFilm] = useState(null); 
-  const navigate = useNavigate();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState(null);
+
+  const [form, setForm] = useState({
+    judul: '',
+    gambar: '',
+    trailer: '',
+    deskripsi: '',
+    tahun: '2026',
+    rating: '13+',
+    kategori: 'Film',
+    bintang: 5
+  });
 
   const fetchFilms = () => {
-    setLoading(true);
-
-    // Ditambahkan parameter ?full=true agar data Base64 gambar terkirim penuh ke Admin
     fetch('/api/films?full=true')
-      .then((res) => {
-        if (!res.ok) throw new Error('Network response status was not ok');
-        return res.json();
-      })
+      .then((res) => res.json())
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          setFilms(data);
-        } else {
-          setFilms(moviesData);
-        }
-        setLoading(false);
+        if (Array.isArray(data)) setFilms(data);
       })
-      .catch((err) => {
-        console.warn('Backend server tidak aktif, memuat data lokal dummy:', err.message);
-        setFilms(moviesData);
-        setLoading(false);
-      });
+      .catch((err) => console.error(err));
   };
 
   useEffect(() => {
-    const user = localStorage.getItem('user');
-    if (!user) {
-      navigate('/login');
-      return;
-    }
-
     fetchFilms();
-  }, [navigate]);
+  }, []);
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Yakin ingin menghapus film ini?')) {
-      const isLocal = moviesData.some((m) => String(m.id) === String(id));
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-      if (isLocal) {
-        setFilms((prevFilms) => prevFilms.filter((f) => String(f.id || f._id) !== String(id)));
-        alert('Film lokal berhasil dihapus dari tampilan!');
-        return;
-      }
-
-      try {
-        const res = await fetch(`/api/films?id=${id}`, {
-          method: 'DELETE',
-        });
-        if (res.ok) {
-          alert('Film berhasil dihapus!');
-          fetchFilms();
-        } else {
-          alert('Gagal menghapus film di server.');
-        }
-      } catch (err) {
-        console.error('Error hapus film:', err);
-        setFilms((prevFilms) => prevFilms.filter((f) => String(f.id || f._id) !== String(id)));
-        alert('Gagal terhubung ke server. Film dihapus dari daftar tampilan lokal.');
-      }
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setForm((prev) => ({ ...prev, gambar: reader.result }));
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    alert('Berhasil Logout!');
-    navigate('/login');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const url = isEditing ? `/api/films?id=${editId}` : '/api/films';
+    const method = isEditing ? 'PUT' : 'POST';
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form)
+      });
+
+      if (res.ok) {
+        alert(isEditing ? 'Film berhasil diperbarui!' : 'Film berhasil ditambahkan!');
+        resetForm();
+        fetchFilms();
+      } else {
+        const errData = await res.json();
+        alert(`Gagal: ${errData.message}`);
+      }
+    } catch (err) {
+      alert(`Error: ${err.message}`);
+    }
+  };
+
+  const handleEdit = (film) => {
+    setIsEditing(true);
+    setEditId(film._id);
+    setForm({
+      judul: film.judul || '',
+      gambar: film.gambar || '',
+      trailer: film.trailer || '',
+      deskripsi: film.deskripsi || '',
+      tahun: film.tahun || '2026',
+      rating: film.rating || '13+',
+      kategori: film.kategori || 'Film',
+      bintang: film.bintang || 5
+    });
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Yakin ingin menghapus film ini?')) return;
+
+    try {
+      const res = await fetch(`/api/films?id=${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        alert('Film berhasil dihapus!');
+        fetchFilms();
+      }
+    } catch (err) {
+      alert(`Gagal menghapus: ${err.message}`);
+    }
+  };
+
+  const resetForm = () => {
+    setIsEditing(false);
+    setEditId(null);
+    setForm({
+      judul: '',
+      gambar: '',
+      trailer: '',
+      deskripsi: '',
+      tahun: '2026',
+      rating: '13+',
+      kategori: 'Film',
+      bintang: 5
+    });
   };
 
   return (
-    <div className="admin-wrapper">
-      <div className="admin-container">
-        <div className="admin-header">
-          <h1 className="admin-title">Dashboard Admin</h1>
-          <button onClick={handleLogout} className="btn-logout">
-            LOGOUT
+    <div className="page-container admin-container">
+      <h2 className="section-title">{isEditing ? 'Edit Film' : 'Kelola Data Film'}</h2>
+
+      <form onSubmit={handleSubmit} className="admin-form">
+        <div className="form-group">
+          <label>Judul Film</label>
+          <input 
+            type="text" 
+            name="judul" 
+            value={form.judul} 
+            onChange={handleChange} 
+            required 
+            placeholder="Masukkan judul film"
+          />
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label>Tahun</label>
+            <input type="text" name="tahun" value={form.tahun} onChange={handleChange} />
+          </div>
+          <div className="form-group">
+            <label>Rating Usia</label>
+            <input type="text" name="rating" value={form.rating} onChange={handleChange} />
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label>Kategori</label>
+            <input type="text" name="kategori" value={form.kategori} onChange={handleChange} />
+          </div>
+          <div className="form-group">
+            <label>Bintang (1 - 5)</label>
+            <select name="bintang" value={form.bintang} onChange={handleChange}>
+              <option value={5}>5 Bintang</option>
+              <option value={4}>4 Bintang</option>
+              <option value={3}>3 Bintang</option>
+              <option value={2}>2 Bintang</option>
+              <option value={1}>1 Bintang</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label>Upload Gambar Poster</label>
+          <input type="file" accept="image/*" onChange={handleImageUpload} />
+          {form.gambar && (
+            <img src={form.gambar} alt="Preview" className="admin-poster-preview" />
+          )}
+        </div>
+
+        <div className="form-group">
+          <label>Link Trailer YouTube</label>
+          <input 
+            type="text" 
+            name="trailer" 
+            value={form.trailer} 
+            onChange={handleChange} 
+            placeholder="Tempelkan link YouTube di sini"
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Deskripsi Film</label>
+          <textarea 
+            name="deskripsi" 
+            rows="4" 
+            value={form.deskripsi} 
+            onChange={handleChange} 
+            placeholder="Tulis deskripsi..."
+          />
+        </div>
+
+        <div className="form-actions">
+          <button type="submit" className="submit-btn">
+            {isEditing ? 'Simpan Perubahan' : 'Tambah Film'}
           </button>
+          {isEditing && (
+            <button type="button" onClick={resetForm} className="cancel-btn">
+              Batal
+            </button>
+          )}
         </div>
+      </form>
 
-        <div className="admin-actions">
-          <Link to="/detail" state={{ from: '/admin' }} className="btn-add-film">
-            + Tambah Film
-          </Link>
-        </div>
-
-        {loading ? (
-          <p className="admin-loading">Memuat data admin...</p>
-        ) : (
-          <>
-            <div className="admin-table-wrapper">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th className="col-title">Judul</th>
-                    <th className="col-center">Gambar</th>
-                    <th className="col-trailer">Trailer</th>
-                    <th className="col-desc">Deskripsi</th>
-                    <th className="col-center">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {films.length > 0 ? (
-                    films.map((film) => {
-                      const imgUrl = film.gambar || film.image;
-                      const filmTitle = film.judul || film.title;
-                      const filmId = film._id || film.id;
-                      const trailerUrl = film.trailer || film.trailerEmbed;
-
-                      return (
-                        <tr key={filmId}>
-                          <td className="col-title">{filmTitle}</td>
-                          <td className="col-center">
-                            {imgUrl ? (
-                              <img 
-                                src={imgUrl} 
-                                alt={filmTitle} 
-                                onClick={() => setSelectedFilm({ src: imgUrl, title: filmTitle })}
-                                className="admin-thumb"
-                                title="Klik untuk memperbesar"
-                              />
-                            ) : (
-                              <span className="no-img-text">Tidak Ada Gambar</span>
-                            )}
-                          </td>
-                          <td className="col-trailer">
-                            {trailerUrl ? (
-                              <a href={trailerUrl} target="_blank" rel="noreferrer" className="trailer-link">
-                                Lihat Trailer
-                              </a>
-                            ) : '-'}
-                          </td>
-                          <td className="col-desc">
-                            {film.deskripsi || film.description}
-                          </td>
-                          <td className="col-center">
-                            <button 
-                              onClick={() => handleDelete(filmId)}
-                              className="btn-delete"
-                            >
-                              Hapus
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  ) : (
-                    <tr>
-                      <td colSpan="5" className="empty-table">
-                        Belum ada data film di database.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="admin-mobile-list">
-              {films.length > 0 ? (
-                films.map((film) => {
-                  const imgUrl = film.gambar || film.image;
-                  const filmTitle = film.judul || film.title;
-                  const filmId = film._id || film.id;
-                  const trailerUrl = film.trailer || film.trailerEmbed;
-
-                  return (
-                    <div key={filmId} className="admin-card-item">
-                      <div className="admin-card-body">
-                        {imgUrl && (
-                          <img 
-                            src={imgUrl} 
-                            alt={filmTitle} 
-                            onClick={() => setSelectedFilm({ src: imgUrl, title: filmTitle })}
-                            className="mobile-card-thumb"
-                          />
-                        )}
-                        <div className="admin-card-info">
-                          <h3 className="mobile-film-title">{filmTitle}</h3>
-                          <p className="mobile-film-desc">{film.deskripsi || film.description}</p>
-                          {trailerUrl && (
-                            <a href={trailerUrl} target="_blank" rel="noreferrer" className="trailer-link">
-                              ▶ Lihat Trailer
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                      <div className="admin-card-footer">
-                        <button 
-                          onClick={() => handleDelete(filmId)}
-                          className="btn-delete-mobile"
-                        >
-                          Hapus Film
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <p className="empty-table">Belum ada data film di database.</p>
-              )}
-            </div>
-          </>
-        )}
-
-        <Lightbox 
-          isOpen={Boolean(selectedFilm)} 
-          onClose={() => setSelectedFilm(null)} 
-          imageSrc={selectedFilm?.src} 
-          title={selectedFilm?.title} 
-        />
+      <div className="admin-table-wrapper">
+        <h3>Daftar Film Terdaftar</h3>
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Poster</th>
+              <th>Judul</th>
+              <th>Tahun</th>
+              <th>Bintang</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            {films.map((f) => (
+              <tr key={f._id}>
+                <td>
+                  <img src={f.gambar} alt={f.judul} className="table-thumb" />
+                </td>
+                <td>{f.judul}</td>
+                <td>{f.tahun}</td>
+                <td>★ {f.bintang || 5}</td>
+                <td>
+                  <div className="action-btns">
+                    <button onClick={() => handleEdit(f)} className="edit-btn">Edit</button>
+                    <button onClick={() => handleDelete(f._id)} className="delete-btn">Hapus</button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
