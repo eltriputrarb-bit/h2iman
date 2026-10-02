@@ -881,7 +881,6 @@ body {
     height: 160px;
   }
 }
-
 /* ==========================================
    GLOBAL LAYOUT & PAGE CONTAINER
    ========================================== */
@@ -1042,19 +1041,35 @@ body {
   color: #e0e0e0;
 }
 
+.detail-description {
+  font-size: 0.95rem;
+  color: #cccccc;
+  line-height: 1.6;
+  margin: 0;
+}
+
 /* ==========================================
-   TOMBOL MULAI MERAH
+   ROW SEJAJAR: TOMBOL MULAI & BINTANG RATING
    ========================================== */
 
+.detail-action-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+/* Tombol Mulai Merah */
 .watch-trailer-btn,
 .detail-start-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: #e50914; /* Merah */
+  background-color: #e50914;
   color: #ffffff;
-  padding: 0.75rem 2rem;
-  font-size: 1rem;
+  padding: 0.65rem 1.6rem;
+  font-size: 0.95rem;
   font-weight: 700;
   border-radius: 6px;
   text-decoration: none;
@@ -1063,7 +1078,6 @@ body {
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   width: fit-content;
   box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
-  margin-top: 4px;
 }
 
 .watch-trailer-btn:hover,
@@ -1078,10 +1092,7 @@ body {
   transform: scale(0.98);
 }
 
-/* ==========================================
-   RATING BINTANG KUNING
-   ========================================== */
-
+/* Rating Bintang Kuning Emas */
 .detail-rating,
 .stars-container {
   display: flex;
@@ -1090,21 +1101,14 @@ body {
 }
 
 .star-icon {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   color: #444444;
   transition: all 0.2s ease;
 }
 
 .star-icon.active {
-  color: #ffd700; /* Kuning Emas */
+  color: #ffd700;
   filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.6));
-}
-
-.detail-description {
-  font-size: 0.95rem;
-  color: #cccccc;
-  line-height: 1.6;
-  margin: 0;
 }
 
 /* ==========================================
@@ -1167,9 +1171,7 @@ body {
 
   .watch-trailer-btn,
   .detail-start-btn {
-    width: 100%;
-    padding: 0.85rem;
-    font-size: 1.05rem;
+    padding: 0.65rem 1.4rem;
   }
 }
 
@@ -1183,6 +1185,7 @@ body {
 .detail-poster-wrapper img:nth-of-type(n+2) {
   display: none !important;
 }
+
 /* ==========================================
    ADMIN PANEL STYLES
    ========================================== */
