@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './admin.css';
 
+const LOGO_SRC = '/images/logo.jpg';
+
 export default function Admin() {
   const [films, setFilms] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -150,8 +152,7 @@ export default function Admin() {
           ☰
         </button>
         <h2 className="adm-mobile-logo">
-          <img src="/images/logo.jpg" alt="Film Logo" className="adm-logo-img" />
-          Film Logo
+          <img src={LOGO_SRC} alt="Film Logo" className="adm-logo-img" />
         </h2>
       </header>
 
@@ -167,8 +168,7 @@ export default function Admin() {
       <aside className={`adm-admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="adm-sidebar-logo">
           <h2>
-            <img src="/logo.jpg" alt="Film Logo" className="adm-logo-img" />
-            Film Logo
+            <img src={LOGO_SRC} alt="Film Logo" className="adm-logo-img" />
           </h2>
           <button 
             className="adm-close-sidebar-btn" 
@@ -410,4 +410,4 @@ export default function Admin() {
       </main>
     </div>
   );
-}     
+}

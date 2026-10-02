@@ -461,12 +461,15 @@
 .adm-sidebar-logo h2 {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  min-width: 0;
+  margin: 0;
 }
 
 .adm-logo-img {
-  height: 32px;
+  display: block;
+  height: 40px;
   width: auto;
+  max-width: 170px;
   border-radius: 6px;
   object-fit: contain;
 }
