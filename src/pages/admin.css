@@ -1,10 +1,6 @@
 /* ==========================================
-   ADMIN LAYOUT & BASE STYLES
+   FIX UTAMA LAYOUT & STACKING CONTEXT
    ========================================== */
-
-* {
-  box-sizing: border-box;
-}
 
 html, body {
   margin: 0;
@@ -17,300 +13,33 @@ html, body {
 .admin-layout {
   display: flex;
   min-height: 100vh;
-  min-height: 100dvh; /* Dynamic Viewport Height untuk iOS Safari */
+  min-height: 100dvh;
   background-color: #0d0d0d;
   position: relative;
   width: 100%;
   overflow-x: hidden;
 }
 
-/* Header & Close Button Khusus Mobile */
-.mobile-header {
-  display: none;
-}
-
-.close-sidebar-btn {
-  display: none;
-}
-
-/* Sidebar Styling (Desktop Default) */
-.admin-sidebar {
-  width: 260px;
-  background-color: #141414;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 1000;
-}
-
-.sidebar-logo {
-  padding: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.sidebar-logo h2 {
-  color: #ffffff;
-  font-size: 1.25rem;
-  margin: 0;
-  font-weight: 700;
-}
-
-.sidebar-menu {
-  display: flex;
-  flex-direction: column;
-  padding: 1rem 0;
-}
-
-.menu-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.5rem;
-  background: none;
-  border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  color: #aaaaaa;
-  font-size: 0.95rem;
-  font-weight: 600;
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.menu-item:hover {
-  background-color: #1f1f1f;
-  color: #ffffff;
-}
-
-.menu-item.active {
-  background-color: #e50914;
-  color: #ffffff;
-}
-
-.menu-item .arrow {
-  font-size: 1.2rem;
-  transition: transform 0.2s ease;
-}
-
 /* Main Content Area */
 .admin-content {
   flex: 1 1 auto;
   padding: 2rem;
+  width: 100%;
   min-width: 0;
-  width: 100%;
-}
-
-.content-section {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.section-title {
-  color: #ffffff;
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-  font-weight: 700;
-}
-
-/* Form Styling */
-.admin-form {
-  background-color: #181818;
-  padding: 1.5rem;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  width: 100%;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.form-group label {
-  color: #e0e0e0;
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.admin-form input[type="text"],
-.admin-form select,
-.admin-form textarea {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  background-color: #222222;
-  border: 1px solid #333333;
-  border-radius: 6px;
-  color: #ffffff;
-  font-size: 0.95rem;
-  outline: none;
-}
-
-.admin-form select {
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url("data:image/svg+xml;utf8,<svg fill='%23ffffff' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  background-size: 1.2rem;
-  padding-right: 2.5rem;
-}
-
-.preview-container {
-  margin-top: 0.5rem;
-}
-
-.admin-poster-preview {
-  width: 90px;
-  height: 130px;
-  object-fit: cover;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.form-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
-}
-
-.submit-btn {
-  background-color: #e50914;
-  color: #ffffff;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 6px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.cancel-btn {
-  background-color: #444444;
-  color: #ffffff;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-/* Table Styling */
-.admin-table-wrapper {
-  background-color: #181818;
-  padding: 1.5rem;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  overflow-x: auto;
-  width: 100%;
-  -webkit-overflow-scrolling: touch;
-}
-
-.table-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.refresh-btn {
-  background-color: #2b2b2b;
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.admin-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  min-width: 480px;
-}
-
-.admin-table th,
-.admin-table td {
-  padding: 0.85rem 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  color: #dddddd;
-  font-size: 0.92rem;
-}
-
-.admin-table th {
-  background-color: #222222;
-  color: #ffffff;
-}
-
-.table-thumb {
-  width: 48px;
-  height: 68px;
-  object-fit: cover;
-  border-radius: 4px;
-}
-
-.table-thumb-placeholder {
-  width: 48px;
-  height: 68px;
-  background-color: #333;
-  color: #888;
-  font-size: 0.65rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  text-align: center;
-}
-
-.action-btns {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.edit-btn {
-  background-color: #007bff;
-  color: #ffffff;
-  border: none;
-  padding: 0.45rem 0.85rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.delete-btn {
-  background-color: #dc3545;
-  color: #ffffff;
-  border: none;
-  padding: 0.45rem 0.85rem;
-  border-radius: 4px;
-  cursor: pointer;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1; /* Memastikan konten selalu berada di atas background */
 }
 
 /* ==========================================
-   RESPONSIVE DESIGN (TABLET & MOBILE FIX)
+   RESPONSIVE DESIGN (TABLET 768px & MOBILE FIX)
    ========================================== */
 
 @media (max-width: 1024px) {
   .admin-layout {
     flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
   }
 
   .mobile-header {
@@ -322,7 +51,7 @@ html, body {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     position: sticky;
     top: 0;
-    z-index: 900;
+    z-index: 100; /* Header tetap di atas konten */
     width: 100%;
   }
 
@@ -342,6 +71,7 @@ html, body {
     font-weight: 700;
   }
 
+  /* Sidebar Drawer */
   .admin-sidebar {
     position: fixed;
     top: 0;
@@ -350,7 +80,9 @@ html, body {
     height: 100vh;
     height: 100dvh;
     transform: translateX(-100%);
-    z-index: 999;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 999; /* Sidebar di atas overlay */
+    background-color: #141414;
     box-shadow: 5px 0 25px rgba(0, 0, 0, 0.8);
   }
 
@@ -367,22 +99,29 @@ html, body {
     cursor: pointer;
   }
 
+  /* Overlay Backdrop saat Sidebar Terbuka */
   .sidebar-overlay {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
-    z-index: 998;
+    z-index: 990; /* Overlay berada tepat di bawah sidebar (999) */
   }
 
   .admin-content {
-    padding: 1rem;
+    padding: 1.25rem;
+    z-index: 1;
     overflow-y: visible;
   }
 
   .admin-table-wrapper {
     padding: 1rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
@@ -391,10 +130,7 @@ html, body {
     grid-template-columns: 1fr;
   }
 
-  .form-actions {
-    flex-direction: column;
-  }
-
+  .form-actions,
   .action-btns {
     flex-direction: column;
   }
