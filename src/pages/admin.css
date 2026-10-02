@@ -16,10 +16,6 @@ html, body {
   color: #ffffff;
 }
 
-/* ==========================================
-   DESKTOP & IPAD/TABLET LAYOUT (>= 768px)
-   ========================================== */
-
 .admin-layout {
   display: flex;
   min-height: 100vh;
@@ -30,16 +26,11 @@ html, body {
   overflow-x: hidden;
 }
 
-/* Header Mobile Sembunyi di Desktop & iPad */
-.mobile-header {
-  display: none;
-}
-
+.mobile-header,
 .close-sidebar-btn {
   display: none;
 }
 
-/* Sidebar Tetap Tampil di Desktop & iPad */
 .admin-sidebar {
   width: 260px;
   background-color: #141414;
@@ -97,11 +88,6 @@ html, body {
   color: #ffffff;
 }
 
-.menu-item .arrow {
-  font-size: 1.2rem;
-}
-
-/* Area Konten Utama */
 .admin-content {
   flex: 1 1 auto;
   padding: 2.5rem;
@@ -125,113 +111,7 @@ html, body {
   font-weight: 700;
 }
 
-/* Form Styling */
-.admin-form {
-  background-color: #141414;
-  padding: 2rem;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  width: 100%;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.form-group label {
-  color: #e0e0e0;
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-}
-
-.admin-form input[type="text"],
-.admin-form select,
-.admin-form textarea {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  background-color: #222222;
-  border: 1px solid #333333;
-  border-radius: 6px;
-  color: #ffffff;
-  font-size: 0.95rem;
-  outline: none;
-  transition: border-color 0.2s ease;
-}
-
-.admin-form input[type="text"]:focus,
-.admin-form select:focus,
-.admin-form textarea:focus {
-  border-color: #e50914;
-}
-
-.admin-form select {
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url("data:image/svg+xml;utf8,<svg fill='%23ffffff' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  background-size: 1.2rem;
-  padding-right: 2.5rem;
-}
-
-.preview-container {
-  margin-top: 0.5rem;
-}
-
-.admin-poster-preview {
-  width: 100px;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.form-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
-}
-
-.submit-btn {
-  background-color: #e50914;
-  color: #ffffff;
-  padding: 0.8rem 1.8rem;
-  border: none;
-  border-radius: 6px;
-  font-weight: 700;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.submit-btn:hover {
-  background-color: #f40612;
-}
-
-.cancel-btn {
-  background-color: #333333;
-  color: #ffffff;
-  padding: 0.8rem 1.8rem;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-}
-
-/* Tabel Styling Desktop */
+/* Tabel Desktop Biasa */
 .admin-table-wrapper {
   background-color: #141414;
   padding: 1.5rem;
@@ -239,7 +119,6 @@ html, body {
   border: 1px solid rgba(255, 255, 255, 0.1);
   overflow-x: auto;
   width: 100%;
-  -webkit-overflow-scrolling: touch;
 }
 
 .table-header-row {
@@ -288,18 +167,6 @@ html, body {
   border-radius: 4px;
 }
 
-.table-thumb-placeholder {
-  width: 50px;
-  height: 70px;
-  background-color: #2a2a2a;
-  color: #888888;
-  font-size: 0.65rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-}
-
 .action-btns {
   display: flex;
   gap: 0.5rem;
@@ -325,16 +192,15 @@ html, body {
   font-weight: 600;
 }
 
-/* Overlay Default Sembunyi */
 .sidebar-overlay {
   display: none;
 }
 
 /* ==========================================
-   MOBILE ONLY DESIGN (< 768px, cth: iPhone)
+   TAMPILAN RESPONSIF / KERTAS (MOBILE & TABLET <= 1024px)
    ========================================== */
 
-@media (max-width: 767px) {
+@media (max-width: 1024px) {
   .admin-layout {
     flex-direction: column;
   }
@@ -358,7 +224,6 @@ html, body {
     color: #ffffff;
     font-size: 1.5rem;
     cursor: pointer;
-    line-height: 1;
   }
 
   .mobile-logo {
@@ -368,7 +233,6 @@ html, body {
     font-weight: 700;
   }
 
-  /* Sidebar Drawer Mobile */
   .admin-sidebar {
     position: fixed;
     top: 0;
@@ -379,7 +243,6 @@ html, body {
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 999;
-    box-shadow: 5px 0 25px rgba(0, 0, 0, 0.8);
   }
 
   .admin-sidebar.open {
@@ -395,114 +258,91 @@ html, body {
     cursor: pointer;
   }
 
-  /* Backdrop Overlay Mobile */
   .sidebar-overlay {
     display: block;
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
     z-index: 990;
   }
 
   .admin-content {
-    padding: 1.25rem;
-  }
-
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-
-  .form-actions {
-    flex-direction: column;
-  }
-
-  /* ==========================================
-     KONVERSI TABEL MENJADI CARD SKETSA (IPHONE)
-     ========================================== */
-
-  .admin-table-wrapper {
     padding: 1rem;
   }
 
-  /* Sembunyikan thead tabel standar */
+  /* --- SETUP TAMPILAN SESUAI SKETSA KERTAS --- */
+  
+  /* Sembunyikan header tabel horizontal desktop */
   .admin-table thead {
-    display: none;
+    display: none !important;
   }
 
   .admin-table, 
   .admin-table tbody, 
   .admin-table tr, 
   .admin-table td {
-    display: block;
-    width: 100%;
+    display: block !important;
+    width: 100% !important;
   }
 
-  /* Setiap baris tabel menjadi 1 Card */
-  .admin-table tr {
-    margin-bottom: 1.25rem;
-    background-color: #1a1a1a;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 8px;
-    padding: 0.5rem 1rem;
+  /* Setiap baris (1 film) menjadi 1 Kartu Berbingkai */
+  .admin-table tbody tr {
+    margin-bottom: 1.5rem !important;
+    background-color: #181818 !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    padding: 0 !important;
   }
 
-  /* Setiap cell tersusun bertumpuk vertikal (seperti sketsa) */
+  /* Format 2 Kolom (Kiri: Nama Field, Kanan: Isi Data) */
   .admin-table td {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    text-align: right;
+    display: grid !important;
+    grid-template-columns: 100px 1fr !important; /* Kolom kiri fixed 100px, kanan fleksibel */
+    align-items: center !important;
+    padding: 0.75rem 1rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    text-align: left !important;
   }
 
   .admin-table td:last-child {
-    border-bottom: none;
+    border-bottom: none !important;
   }
 
-  /* Label Kiri otomatis berdasarkan urutan elemen */
+  /* Label Kiri Sesuai Urutan Kolom */
   .admin-table td:nth-child(1)::before {
     content: "Poster";
     font-weight: 700;
-    color: #aaaaaa;
+    color: #ffffff;
   }
 
   .admin-table td:nth-child(2)::before {
     content: "Judul";
     font-weight: 700;
-    color: #aaaaaa;
+    color: #ffffff;
   }
 
   .admin-table td:nth-child(3)::before {
     content: "Tahun";
     font-weight: 700;
-    color: #aaaaaa;
+    color: #ffffff;
   }
 
   .admin-table td:nth-child(4)::before {
     content: "Bintang";
     font-weight: 700;
-    color: #aaaaaa;
+    color: #ffffff;
   }
 
   .admin-table td:nth-child(5)::before {
     content: "Aksi";
     font-weight: 700;
-    color: #aaaaaa;
+    color: #ffffff;
   }
 
   .action-btns {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .action-btns button {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.8rem;
+    display: flex !important;
+    gap: 0.5rem !important;
   }
 }
