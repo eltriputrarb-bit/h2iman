@@ -2,19 +2,10 @@ import mongoose from 'mongoose';
 import connectDB from './db.js';
 import Film from './models/Film.js';
 
-const ADMIN_SECRET_TOKEN = process.env.ADMIN_TOKEN_SECRET || 'SECRET_ADMIN_TOKEN_2026_SECURE';
-
-// Helper verifikasi token keamanan
-const verifyAdmin = (req) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.split(' ')[1];
-  return token === ADMIN_SECRET_TOKEN;
-};
-
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -26,32 +17,31 @@ export default async function handler(req, res) {
     return res.status(500).json({ message: 'Gagal terhubung ke database: ' + dbErr.message });
   }
 
+  // Parse query parameter secara aman (baik di Vercel Serverless maupun Express)
   const query = req.query || {};
   const id = query.id || req.body?.id;
   const isFull = query.full === 'true' || query.full === true;
 
   try {
-    // 1. GET: Bebas diakses publik (atau terproteksi jika full=true)
     if (req.method === 'GET') {
       if (id) {
         if (!mongoose.Types.ObjectId.isValid(id)) {
           return res.status(404).json({ message: 'ID tidak valid' });
         }
+
         const film = await Film.findById(id).lean();
         if (!film) return res.status(404).json({ message: 'Film tidak ditemukan' });
         return res.status(200).json(film);
       }
 
+      // Ambil seluruh daftar film dari MongoDB
       const films = await Film.find().sort({ createdAt: -1 }).lean();
 
       if (isFull) {
-        // Cek token saat meminta full data
-        if (!verifyAdmin(req)) {
-          return res.status(401).json({ message: 'Akses ditolak. Token tidak valid.' });
-        }
         return res.status(200).json(films);
       }
 
+      // Bersihkan data sensitif jika query full=true tidak disertakan
       const cleanedFilms = films.map((f) => {
         const obj = { ...f };
         if (obj.gambar && obj.gambar.startsWith('data:image')) {
@@ -68,12 +58,6 @@ export default async function handler(req, res) {
       return res.status(200).json(cleanedFilms);
     }
 
-    // Protection Check untuk aksi Mutasi Data (POST, PUT, DELETE)
-    if (!verifyAdmin(req)) {
-      return res.status(401).json({ message: 'Sesi tidak valid atau token salah. Silakan relog.' });
-    }
-
-    // 2. POST: Tambah Film
     if (req.method === 'POST') {
       const { judul, gambar, trailer, deskripsi, tahun, rating, kategori, bintang } = req.body || {};
       
@@ -100,7 +84,6 @@ export default async function handler(req, res) {
       return res.status(201).json(newFilm);
     }
 
-    // 3. PUT: Edit Film
     if (req.method === 'PUT') {
       if (!id) return res.status(400).json({ message: 'ID diperlukan' });
 
@@ -124,6 +107,7 @@ export default async function handler(req, res) {
         bintang: starValue 
       };
 
+      // Hanya update gambar jika ada payload gambar baru yang dikirim
       if (gambar) {
         updateData.gambar = gambar;
       }
@@ -133,7 +117,6 @@ export default async function handler(req, res) {
       return res.status(200).json(updatedFilm);
     }
 
-    // 4. DELETE: Hapus Film
     if (req.method === 'DELETE') {
       if (!id) return res.status(400).json({ message: 'ID diperlukan' });
 
