@@ -1195,6 +1195,8 @@ body {
   min-height: 100vh;
   background-color: #0d0d0d;
   position: relative;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 /* Header Khusus Mobile (Disembunyikan di Desktop) */
@@ -1274,11 +1276,20 @@ body {
   transform: translateX(4px);
 }
 
-/* Main Content Area */
+/* Main Content Area (Fix Flexbox WebKit Bug) */
 .admin-content {
   flex: 1;
   padding: 2rem;
   overflow-y: auto;
+  min-width: 0; /* KRUSIAL: Mencegah layout collapse di WebKit/Safari */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.content-section {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .section-title {
@@ -1301,6 +1312,8 @@ body {
   flex-direction: column;
   gap: 1.2rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .form-group {
@@ -1408,7 +1421,7 @@ body {
 }
 
 /* ==========================================
-   TABEL DATA
+   TABEL DATA (FIX RESPONSIVE & VISIBILITY)
    ========================================== */
 
 .admin-table-wrapper {
@@ -1417,6 +1430,9 @@ body {
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   overflow-x: auto;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   -webkit-overflow-scrolling: touch;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
@@ -1451,7 +1467,7 @@ body {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  min-width: 500px;
+  min-width: 550px; /* Scrollable horizontal di mobile */
 }
 
 .admin-table th,
@@ -1527,6 +1543,8 @@ body {
 @media (max-width: 768px) {
   .admin-layout {
     flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
   }
 
   /* Header Mobile */
@@ -1540,6 +1558,8 @@ body {
     position: sticky;
     top: 0;
     z-index: 900;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .hamburger-btn {
@@ -1567,19 +1587,23 @@ body {
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
-    z-index: 999;
+    z-index: 998;
     animation: fadeIn 0.2s ease-out;
   }
 
-  /* Sidebar Drawer Animasi Slide In */
+  /* Sidebar Drawer Mobile */
   .admin-sidebar {
     position: fixed;
     top: 0;
     left: 0;
     width: 280px;
     height: 100vh;
+    height: 100dvh;
+    background-color: #141414;
     box-shadow: 5px 0 25px rgba(0, 0, 0, 0.8);
     transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 999;
   }
 
   .admin-sidebar.open {
@@ -1599,8 +1623,22 @@ body {
     color: #ffffff;
   }
 
+  /* Area Utama Konten Mobile */
   .admin-content {
-    padding: 1.2rem 0.8rem;
+    padding: 1rem 0.8rem;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .admin-table-wrapper {
+    padding: 1rem 0.8rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .section-title {
+    font-size: 1.35rem;
   }
 
   .form-row {
