@@ -1187,16 +1187,26 @@ body {
 }
 
 /* ==========================================
-   ADMIN LAYOUT WITH SIDEBAR
+   ADMIN LAYOUT WITH SIDEBAR & ANIMATIONS
    ========================================== */
 
 .admin-layout {
   display: flex;
   min-height: 100vh;
   background-color: #0d0d0d;
+  position: relative;
 }
 
-/* Sidebar Styling */
+/* Header Khusus Mobile (Disembunyikan di Desktop) */
+.mobile-header {
+  display: none;
+}
+
+.close-sidebar-btn {
+  display: none;
+}
+
+/* Sidebar Styling (Desktop Default) */
 .admin-sidebar {
   width: 260px;
   background-color: #141414;
@@ -1204,11 +1214,16 @@ body {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
 }
 
 .sidebar-logo {
   padding: 1.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .sidebar-logo h2 {
@@ -1252,6 +1267,11 @@ body {
 
 .menu-item .arrow {
   font-size: 1.2rem;
+  transition: transform 0.2s ease;
+}
+
+.menu-item:hover .arrow {
+  transform: translateX(4px);
 }
 
 /* Main Content Area */
@@ -1316,7 +1336,6 @@ body {
   transition: border-color 0.2s, background-color 0.2s;
 }
 
-/* Styling khusus select dropdown */
 .admin-form select {
   appearance: none;
   -webkit-appearance: none;
@@ -1502,7 +1521,7 @@ body {
 }
 
 /* ==========================================
-   RESPONSIVE (DESKTOP & MOBILE/IPHONE)
+   MOBILE & TABLET DRAWER (IPHONE & ANDROID)
    ========================================== */
 
 @media (max-width: 768px) {
@@ -1510,10 +1529,74 @@ body {
     flex-direction: column;
   }
 
-  .admin-sidebar {
-    width: 100%;
-    border-right: none;
+  /* Header Mobile */
+  .mobile-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: #141414;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 900;
+  }
+
+  .hamburger-btn {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 1.6rem;
+    cursor: pointer;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .mobile-logo {
+    color: #ffffff;
+    font-size: 1.15rem;
+    margin: 0;
+    font-weight: 700;
+  }
+
+  /* Overlay / Backdrop */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  /* Sidebar Drawer Animasi Slide In */
+  .admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    box-shadow: 5px 0 25px rgba(0, 0, 0, 0.8);
+    transform: translateX(-100%);
+  }
+
+  .admin-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .close-sidebar-btn {
+    display: block;
+    background: none;
+    border: none;
+    color: #aaaaaa;
+    font-size: 1.3rem;
+    cursor: pointer;
+  }
+
+  .close-sidebar-btn:hover {
+    color: #ffffff;
   }
 
   .admin-content {
@@ -1532,4 +1615,9 @@ body {
   .cancel-btn {
     width: 100%;
   }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
