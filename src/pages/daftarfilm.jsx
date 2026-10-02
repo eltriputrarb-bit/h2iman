@@ -82,7 +82,7 @@ export default function DaftarFilm() {
 
   // --- FITUR PAGINATION / HALAMAN ---
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6; // Menampilkan 6 film per halaman (sesuai grid 3x2)
+  const itemsPerPage = 6;
 
   useEffect(() => {
     fetch('/api/films?full=true')
@@ -105,7 +105,6 @@ export default function DaftarFilm() {
       });
   }, []);
 
-  // Logika memotong array film sesuai halaman aktif
   const indexOfLastFilm = currentPage * itemsPerPage;
   const indexOfFirstFilm = indexOfLastFilm - itemsPerPage;
   const currentFilms = films.slice(indexOfFirstFilm, indexOfLastFilm);
@@ -172,7 +171,7 @@ export default function DaftarFilm() {
         })}
       </div>
 
-      {/* --- NAVIGASI HALAMAN (1) (2) (3) --- */}
+      {/* --- NAVIGASI HALAMAN --- */}
       {totalPages > 1 && (
         <div style={{ 
           display: 'flex', 
@@ -182,7 +181,6 @@ export default function DaftarFilm() {
           marginTop: '2.5rem',
           paddingBottom: '2rem' 
         }}>
-          {/* Tombol Sebelumnya */}
           <button 
             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
@@ -199,7 +197,6 @@ export default function DaftarFilm() {
             &lt;
           </button>
 
-          {/* Tombol Angka Halaman */}
           {Array.from({ length: totalPages }, (_, index) => {
             const pageNum = index + 1;
             return (
@@ -222,7 +219,6 @@ export default function DaftarFilm() {
             );
           })}
 
-          {/* Tombol Selanjutnya */}
           <button 
             onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
@@ -241,6 +237,7 @@ export default function DaftarFilm() {
         </div>
       )}
 
+      {/* Lightbox Popup Video */}
       <Lightbox 
         isOpen={Boolean(activeVideo)} 
         onClose={() => setActiveVideo(null)}

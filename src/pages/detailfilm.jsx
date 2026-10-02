@@ -85,7 +85,7 @@ export default function DetailFilm() {
       </Link>
 
       <div className="detail-card">
-        {/* Gambar Poster tunggal yang akan terisi penuh rapi di sebelah kiri */}
+        {/* Gambar Poster */}
         <div className="detail-poster-wrapper">
           <img src={film.gambar} alt={film.judul} className="detail-poster" />
           <div className="detail-poster-overlay"></div>
@@ -113,12 +113,13 @@ export default function DetailFilm() {
               onClick={() => setIsTrailerOpen(true)} 
               className="watch-trailer-btn"
             >
-              ▶ Tonton Trailer
+              Mulai &gt;
             </button>
           )}
         </div>
       </div>
 
+      {/* Lightbox Popup Video */}
       <Lightbox 
         isOpen={isTrailerOpen} 
         onClose={() => setIsTrailerOpen(false)} 
