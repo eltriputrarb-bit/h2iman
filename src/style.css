@@ -883,95 +883,121 @@ body {
 }
 
 /* ==========================================
-   DETAIL FILM PAGE STYLES (FULL RESPONSIVE)
+   GLOBAL LAYOUT & PAGE CONTAINER
    ========================================== */
 
-/* Background gelap transparan & selalu di atas Navbar */
-.detail-page-wrapper {
-  position: fixed;        /* Menjaga overlay tetap di layar saat di-scroll */
-  top: 0;
-  left: 0;
-  width: 100vw;           /* Memenuhi lebar layar */
-  height: 100vh;          /* Memenuhi tinggi layar */
-  background-color: rgba(0, 0, 0, 0.75); /* Background gelap transparan */
-  backdrop-filter: blur(4px);            /* Efek blur pada background (opsional) */
-  
-  /* Posisikan Modal di Tengah (Center) */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  
-  /* Agar selalu berada di atas Navbar */
-  z-index: 9999;          
-  overflow-y: auto;       /* Antisipasi jika layar HP sangat kecil agar bisa di-scroll */
-  padding: 1rem;
+.page-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
   box-sizing: border-box;
 }
 
-/* Pastikan Navbar kamu memiliki z-index lebih rendah, misalnya: */
-/* .navbar { z-index: 100; } */
+/* ==========================================
+   DETAIL FILM MODAL (FULL RESPONSIVE)
+   ========================================== */
 
-.loading-text {
-  color: #ffffff;
-  font-size: 1.1rem;
+/* Overlay Gelap Transparan di Belakang Modal */
+.detail-page-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 1.5rem;
+  box-sizing: border-box;
 }
 
-/* Kartu Utama Detail Film */
+.back-link {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 10000;
+  transition: all 0.2s ease;
+}
+
+.back-link:hover {
+  background: #e50914;
+  border-color: #e50914;
+}
+
+/* Kartu Utama Detail Film (PC: 2 Kolom menyamping | HP: 1 Kolom ke bawah) */
 .detail-card {
   position: relative;
   width: 100%;
-  max-width: 580px; /* Ukuran lebar modal ideal sesuai gambar 1 */
+  max-width: 920px; /* Diperlebar agar gagah dan tidak sempit di Laptop/PC */
   background-color: #181818;
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
   display: flex;
-  flex-direction: column; /* Mengubah layout jadi vertikal (gambar di atas) */
-  border: 1px solid #282828;
+  flex-direction: column; /* Default stack untuk layar HP */
+  border: 1px solid #2e2e2e;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
+/* Modal Mode Admin */
 .detail-card.admin-mode {
-  max-width: 800px;
+  max-width: 850px;
   padding: 2rem;
 }
 
 /* Tombol Tutup (X) */
 .detail-close-btn {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 10;
+  top: 15px;
+  right: 15px;
+  z-index: 20;
   background: rgba(0, 0, 0, 0.6);
   color: #ffffff;
   border: none;
-  font-size: 1rem;
-  width: 32px;
-  height: 32px;
+  font-size: 1.1rem;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .detail-close-btn:hover {
   background: #e50914;
-  transform: scale(1.08);
+  transform: scale(1.1);
 }
 
-/* Poster Wrapper (Banner Bagian Atas) */
+/* Area Gambar Poster / Banner */
 .detail-poster-wrapper {
   position: relative;
   width: 100%;
-  height: 280px; /* Tinggi gambar banner */
+  height: 280px;
   background-color: #111111;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
+.detail-poster,
 .detail-poster-img {
   width: 100%;
   height: 100%;
@@ -979,20 +1005,6 @@ body {
   display: block;
 }
 
-.detail-no-image {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #777777;
-  font-size: 0.9rem;
-  background-color: #222222;
-  text-align: center;
-  padding: 1rem;
-}
-
-/* Gradasi bayangan bawah gambar agar menyatu dengan background modal */
 .detail-poster-overlay {
   position: absolute;
   top: 0;
@@ -1003,114 +1015,118 @@ body {
   pointer-events: none;
 }
 
-/* Area Konten Teks Bagian Bawah */
+/* Area Teks Detail Film */
+.detail-info,
 .detail-content {
-  padding: 1.5rem 2rem 2rem 2rem;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 
 .detail-title {
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin: 0 0 0.8rem 0;
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 1rem 0;
   line-height: 1.2;
   color: #ffffff;
 }
 
-/* Tag Meta Film */
+/* Badges / Tags (Tahun, Rating, Kategori) */
+.detail-badges,
 .detail-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: 0.6rem;
+  margin-bottom: 1.2rem;
 }
 
+.badge,
 .detail-tag {
   background-color: #2a2a2a;
-  color: #d1d1d1;
-  padding: 0.25rem 0.65rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
+  color: #e0e0e0;
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
   font-weight: 600;
-  border: 1px solid #383838;
+  border: 1px solid #3a3a3a;
 }
 
-/* Deskripsi Film */
-.detail-description {
-  font-size: 0.9rem;
-  color: #bbbbbb;
-  line-height: 1.5;
-  margin-bottom: 1.5rem;
+.badge-outline {
+  background: transparent;
+  border-color: #666;
 }
 
-/* Area Tombol & Rating Bintang */
-.action-rating-container {
+.badge-kategori {
+  background-color: #e50914;
+  border-color: #e50914;
+}
+
+/* Rating Bintang */
+.detail-rating,
+.stars-container {
   display: flex;
   align-items: center;
-  gap: 1.2rem;
+  margin-bottom: 1.2rem;
 }
 
+.star-icon {
+  color: #444444;
+  font-size: 1.3rem;
+  margin-right: 2px;
+}
+
+.star-icon.active {
+  color: #ffd700;
+}
+
+/* Deskripsi Teks */
+.detail-description {
+  font-size: 0.95rem;
+  color: #cccccc;
+  line-height: 1.6;
+  margin-bottom: 1.8rem;
+}
+
+/* Tombol Tonton Trailer / Mulai */
+.watch-trailer-btn,
 .detail-start-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background-color: #e50914;
   color: #ffffff;
-  padding: 0.65rem 1.5rem;
-  font-size: 0.95rem;
-  font-weight: 600;
+  padding: 0.75rem 1.8rem;
+  font-size: 1rem;
+  font-weight: 700;
   border-radius: 6px;
   text-decoration: none;
   border: none;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition: all 0.2s ease;
+  width: fit-content;
 }
 
-.detail-start-btn:hover:not(.disabled) {
+.watch-trailer-btn:hover,
+.detail-start-btn:hover {
   background-color: #f6121d;
   transform: translateY(-2px);
 }
 
-.detail-start-btn.disabled {
-  background-color: #383838;
-  color: #777777;
-  cursor: not-allowed;
-}
+/* ==========================================
+   ADMIN PAGE STYLES
+   ========================================== */
 
-/* Bintang Rating */
-.stars-container {
-  display: flex;
-  align-items: center;
-}
-
-.star-icon {
-  color: #444444; /* Warna abu-abu untuk bintang mati / tidak aktif */
-  font-size: 1.3rem;
-  margin-right: 2px;
-}
-
-.star-icon.active {
-  color: #ffd700; /* Warna kuning emas untuk bintang aktif */
-}
-
-/* Styling Form Admin */
-.admin-header {
-  margin-bottom: 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.back-btn {
-  background: none;
-  border: none;
-  color: #cccccc;
-  cursor: pointer;
-  font-size: 0.95rem;
+.admin-container {
+  color: #ffffff;
 }
 
 .admin-form {
+  background-color: #181818;
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 2.5rem;
+  border: 1px solid #282828;
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
@@ -1119,72 +1135,192 @@ body {
 .form-group {
   display: flex;
   flex-direction: column;
+  gap: 6px;
+  width: 100%;
 }
 
 .form-group label {
-  margin-bottom: 0.5rem;
   font-size: 0.9rem;
-  color: #dddddd;
+  color: #cccccc;
 }
 
+.form-group input,
+.form-group select,
+.form-group textarea,
 .form-input {
   width: 100%;
   padding: 0.8rem;
-  border-radius: 4px;
-  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  border: 1px solid #383838;
   background-color: #222222;
   color: #ffffff;
   box-sizing: border-box;
+  font-size: 1rem; /* Mencegah auto-zoom di browser iOS iPhone */
 }
 
+.form-row,
 .form-grid-4 {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
 }
 
-.file-input {
-  color: #ffffff;
+.admin-poster-preview {
+  margin-top: 10px;
+  max-width: 120px;
+  border-radius: 6px;
+  border: 1px solid #444;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 0.5rem;
 }
 
 .submit-btn {
+  flex: 1;
+  background-color: #e50914;
+  color: #ffffff;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.cancel-btn {
+  background-color: #333333;
+  color: #ffffff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Admin Table Mobile Scroll */
+.admin-table-wrapper {
   width: 100%;
-  margin-top: 1rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background-color: #181818;
+  padding: 1.2rem;
+  border-radius: 10px;
+  border: 1px solid #282828;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 550px;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 12px;
+  border-bottom: 1px solid #2e2e2e;
+  text-align: left;
+}
+
+.table-thumb {
+  width: 48px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.action-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-btn {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 /* ==========================================
-   MEDIA QUERIES (IPHONE & ANDROID KECIL)
+   MEDIA QUERIES (DESKTOP & MOBILE RESPONSIVE)
    ========================================== */
 
-@media (max-width: 480px) {
-  .detail-page-wrapper {
-    padding: 0.5rem;
+/* Layout 2 Kolom khusus Layar Desktop / Monitor PC (>= 768px) */
+@media (min-width: 768px) {
+  .detail-card {
+    flex-direction: row; /* Poster di kiri, Teks di kanan */
+    align-items: stretch;
+    max-height: 80vh;
+    overflow: hidden;
   }
 
   .detail-poster-wrapper {
-    height: 200px; /* Penyesuaian tinggi poster untuk HP */
+    width: 45%; /* Ambil 45% lebar modal */
+    height: auto;
+    min-height: 420px;
   }
 
+  .detail-info,
+  .detail-content {
+    width: 55%; /* Ambil 55% lebar modal */
+    padding: 2.5rem;
+    overflow-y: auto; /* Teks di-scroll internal jika panjang */
+    justify-content: center;
+  }
+
+  .detail-poster-overlay {
+    background: linear-gradient(to right, rgba(24, 24, 24, 0) 60%, rgba(24, 24, 24, 1) 100%);
+  }
+
+  .form-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Tampilan Layar HP / Mobile (< 768px) */
+@media (max-width: 767px) {
+  .detail-page-wrapper {
+    padding: 0.8rem;
+  }
+
+  .detail-card {
+    max-width: 100%;
+    max-height: 92vh;
+  }
+
+  .detail-poster-wrapper {
+    height: 220px;
+  }
+
+  .detail-info,
   .detail-content {
     padding: 1.2rem 1rem 1.5rem 1rem;
   }
 
   .detail-title {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
   }
 
-  .action-rating-container {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.8rem;
-  }
-
+  .watch-trailer-btn,
   .detail-start-btn {
     width: 100%;
     text-align: center;
   }
 
+  .form-row,
   .form-grid-4 {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Form jadi 1 kolom di HP */
   }
 }
