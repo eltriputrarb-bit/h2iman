@@ -1187,14 +1187,78 @@ body {
 }
 
 /* ==========================================
-   ADMIN PANEL - GLOBAL CONTAINER
+   ADMIN LAYOUT WITH SIDEBAR
    ========================================== */
 
-.admin-container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-  box-sizing: border-box;
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #0d0d0d;
+}
+
+/* Sidebar Styling */
+.admin-sidebar {
+  width: 260px;
+  background-color: #141414;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.sidebar-logo {
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-logo h2 {
+  color: #ffffff;
+  font-size: 1.25rem;
+  margin: 0;
+  font-weight: 700;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0;
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: none;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: #aaaaaa;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.menu-item:hover {
+  background-color: #1f1f1f;
+  color: #ffffff;
+}
+
+.menu-item.active {
+  background-color: #e50914;
+  color: #ffffff;
+}
+
+.menu-item .arrow {
+  font-size: 1.2rem;
+}
+
+/* Main Content Area */
+.admin-content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
 }
 
 .section-title {
@@ -1205,7 +1269,7 @@ body {
 }
 
 /* ==========================================
-   FORM MANAGEMENT (DESKTOP & MOBILE)
+   FORM MANAGEMENT
    ========================================== */
 
 .admin-form {
@@ -1216,7 +1280,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
-  margin-bottom: 2.5rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
@@ -1253,7 +1316,7 @@ body {
   transition: border-color 0.2s, background-color 0.2s;
 }
 
-/* Styling khusus elemen select untuk menangani panah dropdown di iOS & Chrome */
+/* Styling khusus select dropdown */
 .admin-form select {
   appearance: none;
   -webkit-appearance: none;
@@ -1326,7 +1389,7 @@ body {
 }
 
 /* ==========================================
-   TABEL & HEADER ACTION (DESKTOP & MOBILE)
+   TABEL DATA
    ========================================== */
 
 .admin-table-wrapper {
@@ -1343,14 +1406,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.5rem;
   gap: 10px;
-}
-
-.table-header-row h3 {
-  color: #ffffff;
-  margin: 0;
-  font-size: 1.2rem;
 }
 
 .refresh-btn {
@@ -1414,7 +1471,6 @@ body {
   cursor: pointer;
   font-size: 0.85rem;
   font-weight: 600;
-  transition: background-color 0.2s;
 }
 
 .edit-btn:hover:not(:disabled) {
@@ -1430,14 +1486,12 @@ body {
   cursor: pointer;
   font-size: 0.85rem;
   font-weight: 600;
-  transition: background-color 0.2s;
 }
 
 .delete-btn:hover:not(:disabled) {
   background-color: #bd2130;
 }
 
-/* State Disabled untuk Tombol */
 .submit-btn:disabled,
 .cancel-btn:disabled,
 .refresh-btn:disabled,
@@ -1448,55 +1502,34 @@ body {
 }
 
 /* ==========================================
-   MEDIA QUERIES (OPTIMASI IPHONE & ANDROID)
+   RESPONSIVE (DESKTOP & MOBILE/IPHONE)
    ========================================== */
 
 @media (max-width: 768px) {
-  .admin-container {
+  .admin-layout {
+    flex-direction: column;
+  }
+
+  .admin-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .admin-content {
     padding: 1.2rem 0.8rem;
-  }
-
-  .section-title {
-    font-size: 1.5rem;
-    margin-bottom: 1.2rem;
-  }
-
-  .admin-form {
-    padding: 1.2rem;
   }
 
   .form-row {
     grid-template-columns: 1fr;
-    gap: 1.2rem;
   }
 
   .form-actions {
     flex-direction: column;
-    gap: 0.75rem;
   }
 
   .submit-btn,
   .cancel-btn {
     width: 100%;
-    padding: 0.85rem;
-    font-size: 1rem;
-  }
-
-  .admin-table-wrapper {
-    padding: 1rem;
-  }
-
-  .table-header-row {
-    flex-direction: row;
-    align-items: center;
-  }
-
-  .table-header-row h3 {
-    font-size: 1.05rem;
-  }
-
-  .refresh-btn {
-    padding: 0.45rem 0.75rem;
-    font-size: 0.8rem;
   }
 }
