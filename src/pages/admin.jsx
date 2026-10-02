@@ -139,63 +139,63 @@ export default function Admin() {
   };
 
   return (
-    <div className="admin-layout">
+    <div className="adm-admin-layout">
       {/* MOBILE TOPBAR */}
-      <header className="mobile-header">
+      <header className="adm-mobile-header">
         <button 
-          className="hamburger-btn" 
+          className="adm-hamburger-btn" 
           onClick={() => setSidebarOpen(true)}
           aria-label="Open Menu"
         >
           ☰
         </button>
-        <h2 className="mobile-logo">🎬 Film Logo</h2>
+        <h2 className="adm-mobile-logo">🎬 Film Logo</h2>
       </header>
 
       {/* OVERLAY BACKDROP */}
       {sidebarOpen && (
         <div 
-          className="sidebar-overlay" 
+          className="adm-sidebar-overlay" 
           onClick={() => setSidebarOpen(false)} 
         />
       )}
 
       {/* SIDEBAR NAVIGATION */}
-      <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
-        <div className="sidebar-logo">
+      <aside className={`adm-admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
+        <div className="adm-sidebar-logo">
           <h2>🎬 Film Logo</h2>
           <button 
-            className="close-sidebar-btn" 
+            className="adm-close-sidebar-btn" 
             onClick={() => setSidebarOpen(false)}
           >
             ✕
           </button>
         </div>
-        <nav className="sidebar-menu">
+        <nav className="adm-sidebar-menu">
           <button 
-            className={`menu-item ${activeTab === 'form' ? 'active' : ''}`}
+            className={`adm-menu-item ${activeTab === 'form' ? 'active' : ''}`}
             onClick={() => handleNavClick('form')}
           >
             <span>Data Film</span>
-            <span className="arrow">›</span>
+            <span className="adm-arrow">›</span>
           </button>
           <button 
-            className={`menu-item ${activeTab === 'list' ? 'active' : ''}`}
+            className={`adm-menu-item ${activeTab === 'list' ? 'active' : ''}`}
             onClick={() => handleNavClick('list')}
           >
             <span>Daftar Film Terdaftar</span>
-            <span className="arrow">›</span>
+            <span className="adm-arrow">›</span>
           </button>
         </nav>
       </aside>
 
       {/* MAIN CONTENT AREA */}
-      <main className="admin-content">
+      <main className="adm-admin-content">
         {activeTab === 'form' ? (
-          <div className="content-section">
-            <h2 className="section-title">{isEditing ? 'Edit Film' : 'Kelola Data Film'}</h2>
-            <form onSubmit={handleSubmit} className="admin-form">
-              <div className="form-group">
+          <div className="adm-content-section">
+            <h2 className="adm-section-title">{isEditing ? 'Edit Film' : 'Kelola Data Film'}</h2>
+            <form onSubmit={handleSubmit} className="adm-admin-form">
+              <div className="adm-form-group">
                 <label>Judul Film</label>
                 <input 
                   type="text" 
@@ -208,23 +208,23 @@ export default function Admin() {
                 />
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
+              <div className="adm-form-row">
+                <div className="adm-form-group">
                   <label>Tahun</label>
                   <input type="text" name="tahun" value={form.tahun} onChange={handleChange} disabled={submitting} />
                 </div>
-                <div className="form-group">
+                <div className="adm-form-group">
                   <label>Rating Usia</label>
                   <input type="text" name="rating" value={form.rating} onChange={handleChange} disabled={submitting} />
                 </div>
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
+              <div className="adm-form-row">
+                <div className="adm-form-group">
                   <label>Kategori</label>
                   <input type="text" name="kategori" value={form.kategori} onChange={handleChange} disabled={submitting} />
                 </div>
-                <div className="form-group">
+                <div className="adm-form-group">
                   <label>Bintang (1 - 5)</label>
                   <select name="bintang" value={form.bintang} onChange={handleChange} disabled={submitting}>
                     <option value={5}>5 Bintang</option>
@@ -236,17 +236,17 @@ export default function Admin() {
                 </div>
               </div>
 
-              <div className="form-group">
+              <div className="adm-form-group">
                 <label>Upload Gambar Poster</label>
                 <input type="file" accept="image/*" onChange={handleImageUpload} disabled={submitting} />
                 {form.gambar && (
-                  <div className="preview-container">
-                    <img src={form.gambar} alt="Preview" className="admin-poster-preview" />
+                  <div className="adm-preview-container">
+                    <img src={form.gambar} alt="Preview" className="adm-admin-poster-preview" />
                   </div>
                 )}
               </div>
 
-              <div className="form-group">
+              <div className="adm-form-group">
                 <label>Link Trailer YouTube</label>
                 <input 
                   type="text" 
@@ -258,7 +258,7 @@ export default function Admin() {
                 />
               </div>
 
-              <div className="form-group">
+              <div className="adm-form-group">
                 <label>Deskripsi Film</label>
                 <textarea 
                   name="deskripsi" 
@@ -270,15 +270,15 @@ export default function Admin() {
                 />
               </div>
 
-              <div className="form-actions">
-                <button type="submit" className="submit-btn" disabled={submitting}>
+              <div className="adm-form-actions">
+                <button type="submit" className="adm-submit-btn" disabled={submitting}>
                   {submitting 
                     ? (isEditing ? 'Menyimpan...' : 'Menambahkan...') 
                     : (isEditing ? 'Simpan Perubahan' : 'Tambah Film')
                   }
                 </button>
                 {isEditing && (
-                  <button type="button" onClick={resetForm} className="cancel-btn" disabled={submitting}>
+                  <button type="button" onClick={resetForm} className="adm-cancel-btn" disabled={submitting}>
                     Batal
                   </button>
                 )}
@@ -286,14 +286,14 @@ export default function Admin() {
             </form>
           </div>
         ) : (
-          <div className="content-section">
-            <div className="admin-table-wrapper">
-              <div className="table-header-row">
-                <h2 className="section-title" style={{ margin: 0 }}>Daftar Film Terdaftar</h2>
+          <div className="adm-content-section">
+            <div className="adm-admin-table-wrapper">
+              <div className="adm-table-header-row">
+                <h2 className="adm-section-title" style={{ margin: 0 }}>Daftar Film Terdaftar</h2>
                 <button 
                   type="button" 
                   onClick={fetchFilms} 
-                  className="refresh-btn" 
+                  className="adm-refresh-btn" 
                   disabled={loading}
                 >
                   {loading ? 'Memuat...' : '🔄 Refresh Data'}
@@ -301,7 +301,7 @@ export default function Admin() {
               </div>
 
               {/* VIEW 1: TABEL UNTUK DESKTOP */}
-              <table className="admin-table desktop-only-table">
+              <table className="adm-desktop-only-table">
                 <thead>
                   <tr>
                     <th>Poster</th>
@@ -329,18 +329,18 @@ export default function Admin() {
                       <tr key={f._id}>
                         <td>
                           {f.gambar ? (
-                            <img src={f.gambar} alt={f.judul} className="table-thumb" />
+                            <img src={f.gambar} alt={f.judul} className="adm-table-thumb" />
                           ) : (
-                            <div className="table-thumb-placeholder">No Image</div>
+                            <div className="adm-table-thumb-placeholder">No Image</div>
                           )}
                         </td>
                         <td>{f.judul}</td>
                         <td>{f.tahun}</td>
                         <td>★ {f.bintang || 5}</td>
                         <td>
-                          <div className="action-btns">
-                            <button onClick={() => handleEdit(f)} className="edit-btn" disabled={submitting}>Edit</button>
-                            <button onClick={() => handleDelete(f._id)} className="delete-btn" disabled={submitting}>Hapus</button>
+                          <div className="adm-action-btns">
+                            <button onClick={() => handleEdit(f)} className="adm-edit-btn" disabled={submitting}>Edit</button>
+                            <button onClick={() => handleDelete(f._id)} className="adm-delete-btn" disabled={submitting}>Hapus</button>
                           </div>
                         </td>
                       </tr>
@@ -350,46 +350,46 @@ export default function Admin() {
               </table>
 
               {/* VIEW 2: KERTAS / CARD UNTUK MOBILE (SESUAI SKETSA) */}
-              <div className="mobile-cards-container">
+              <div className="adm-mobile-cards-container">
                 {loading ? (
-                  <div className="card-empty-state">Sedang memuat data film...</div>
+                  <div className="adm-card-empty-state">Sedang memuat data film...</div>
                 ) : films.length === 0 ? (
-                  <div className="card-empty-state">Belum ada film terdaftar.</div>
+                  <div className="adm-card-empty-state">Belum ada film terdaftar.</div>
                 ) : (
                   films.map((f) => (
-                    <div className="sketch-card" key={f._id}>
-                      <div className="card-row">
-                        <div className="card-label">Poster</div>
-                        <div className="card-value">
+                    <div className="adm-sketch-card" key={f._id}>
+                      <div className="adm-card-row">
+                        <div className="adm-card-label">Poster</div>
+                        <div className="adm-card-value">
                           {f.gambar ? (
-                            <img src={f.gambar} alt={f.judul} className="table-thumb" />
+                            <img src={f.gambar} alt={f.judul} className="adm-table-thumb" />
                           ) : (
-                            <div className="table-thumb-placeholder">No Image</div>
+                            <div className="adm-table-thumb-placeholder">No Image</div>
                           )}
                         </div>
                       </div>
 
-                      <div className="card-row">
-                        <div className="card-label">Judul</div>
-                        <div className="card-value">{f.judul}</div>
+                      <div className="adm-card-row">
+                        <div className="adm-card-label">Judul</div>
+                        <div className="adm-card-value">{f.judul}</div>
                       </div>
 
-                      <div className="card-row">
-                        <div className="card-label">Tahun</div>
-                        <div className="card-value">{f.tahun}</div>
+                      <div className="adm-card-row">
+                        <div className="adm-card-label">Tahun</div>
+                        <div className="adm-card-value">{f.tahun}</div>
                       </div>
 
-                      <div className="card-row">
-                        <div className="card-label">Bintang</div>
-                        <div className="card-value">★ {f.bintang || 5}</div>
+                      <div className="adm-card-row">
+                        <div className="adm-card-label">Bintang</div>
+                        <div className="adm-card-value">★ {f.bintang || 5}</div>
                       </div>
 
-                      <div className="card-row">
-                        <div className="card-label">Aksi</div>
-                        <div className="card-value">
-                          <div className="action-btns">
-                            <button onClick={() => handleEdit(f)} className="edit-btn" disabled={submitting}>Edit</button>
-                            <button onClick={() => handleDelete(f._id)} className="delete-btn" disabled={submitting}>Hapus</button>
+                      <div className="adm-card-row">
+                        <div className="adm-card-label">Aksi</div>
+                        <div className="adm-card-value">
+                          <div className="adm-action-btns">
+                            <button onClick={() => handleEdit(f)} className="adm-edit-btn" disabled={submitting}>Edit</button>
+                            <button onClick={() => handleDelete(f._id)} className="adm-delete-btn" disabled={submitting}>Hapus</button>
                           </div>
                         </div>
                       </div>

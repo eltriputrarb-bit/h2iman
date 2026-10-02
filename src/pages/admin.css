@@ -16,7 +16,7 @@ html, body {
   color: #ffffff;
 }
 
-.admin-layout {
+.adm-admin-layout {
   display: flex;
   min-height: 100vh;
   min-height: 100dvh;
@@ -27,12 +27,12 @@ html, body {
 }
 
 /* Header & Drawer Controls */
-.mobile-header,
-.close-sidebar-btn {
+.adm-mobile-header,
+.adm-close-sidebar-btn {
   display: none;
 }
 
-.admin-sidebar {
+.adm-admin-sidebar {
   width: 260px;
   background-color: #141414;
   border-right: 1px solid rgba(255, 255, 255, 0.1);
@@ -43,7 +43,7 @@ html, body {
   z-index: 10;
 }
 
-.sidebar-logo {
+.adm-sidebar-logo {
   padding: 1.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
@@ -51,19 +51,19 @@ html, body {
   align-items: center;
 }
 
-.sidebar-logo h2 {
+.adm-sidebar-logo h2 {
   color: #ffffff;
   font-size: 1.25rem;
   font-weight: 700;
 }
 
-.sidebar-menu {
+.adm-sidebar-menu {
   display: flex;
   flex-direction: column;
   padding: 1rem 0;
 }
 
-.menu-item {
+.adm-menu-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -79,21 +79,21 @@ html, body {
   transition: all 0.2s ease;
 }
 
-.menu-item:hover {
+.adm-menu-item:hover {
   background-color: #1f1f1f;
   color: #ffffff;
 }
 
-.menu-item.active {
+.adm-menu-item.active {
   background-color: #e50914;
   color: #ffffff;
 }
 
-.menu-item .arrow {
+.adm-menu-item .adm-arrow {
   font-size: 1.2rem;
 }
 
-.admin-content {
+.adm-admin-content {
   flex: 1 1 auto;
   padding: 2.5rem;
   min-width: 0;
@@ -103,13 +103,13 @@ html, body {
   z-index: 1;
 }
 
-.content-section {
+.adm-content-section {
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
 }
 
-.section-title {
+.adm-section-title {
   color: #ffffff;
   font-size: 1.8rem;
   margin-bottom: 1.5rem;
@@ -117,7 +117,7 @@ html, body {
 }
 
 /* Form Styles */
-.admin-form {
+.adm-admin-form {
   background-color: #141414;
   padding: 2rem;
   border-radius: 12px;
@@ -129,27 +129,27 @@ html, body {
   width: 100%;
 }
 
-.form-group {
+.adm-form-group {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.form-group label {
+.adm-form-group label {
   color: #e0e0e0;
   font-size: 0.9rem;
   font-weight: 600;
 }
 
-.form-row {
+.adm-form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.25rem;
 }
 
-.admin-form input[type="text"],
-.admin-form select,
-.admin-form textarea {
+.adm-admin-form input[type="text"],
+.adm-admin-form select,
+.adm-admin-form textarea {
   width: 100%;
   padding: 0.75rem 1rem;
   background-color: #222222;
@@ -161,13 +161,13 @@ html, body {
   transition: border-color 0.2s ease;
 }
 
-.admin-form input[type="text"]:focus,
-.admin-form select:focus,
-.admin-form textarea:focus {
+.adm-admin-form input[type="text"]:focus,
+.adm-admin-form select:focus,
+.adm-admin-form textarea:focus {
   border-color: #e50914;
 }
 
-.admin-form select {
+.adm-admin-form select {
   appearance: none;
   -webkit-appearance: none;
   background-image: url("data:image/svg+xml;utf8,<svg fill='%23ffffff' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
@@ -177,11 +177,11 @@ html, body {
   padding-right: 2.5rem;
 }
 
-.preview-container {
+.adm-preview-container {
   margin-top: 0.5rem;
 }
 
-.admin-poster-preview {
+.adm-admin-poster-preview {
   width: 100px;
   height: 140px;
   object-fit: cover;
@@ -189,13 +189,13 @@ html, body {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.form-actions {
+.adm-form-actions {
   display: flex;
   gap: 1rem;
   margin-top: 0.5rem;
 }
 
-.submit-btn {
+.adm-submit-btn {
   background-color: #e50914;
   color: #ffffff;
   padding: 0.8rem 1.8rem;
@@ -206,11 +206,11 @@ html, body {
   cursor: pointer;
 }
 
-.submit-btn:hover {
+.adm-submit-btn:hover {
   background-color: #f40612;
 }
 
-.cancel-btn {
+.adm-cancel-btn {
   background-color: #333333;
   color: #ffffff;
   padding: 0.8rem 1.8rem;
@@ -222,7 +222,7 @@ html, body {
 }
 
 /* Container Tabel */
-.admin-table-wrapper {
+.adm-admin-table-wrapper {
   background-color: #141414;
   padding: 1.5rem;
   border-radius: 12px;
@@ -230,7 +230,7 @@ html, body {
   width: 100%;
 }
 
-.table-header-row {
+.adm-table-header-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -239,7 +239,7 @@ html, body {
   gap: 0.5rem;
 }
 
-.refresh-btn {
+.adm-refresh-btn {
   background-color: #222222;
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -251,33 +251,33 @@ html, body {
 }
 
 /* Tampilan Desktop Table (Bawaan Display On) */
-.desktop-only-table {
+.adm-desktop-only-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
 }
 
-.desktop-only-table th,
-.desktop-only-table td {
+.adm-desktop-only-table th,
+.adm-desktop-only-table td {
   padding: 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   color: #dddddd;
   font-size: 0.92rem;
 }
 
-.desktop-only-table th {
+.adm-desktop-only-table th {
   background-color: #1f1f1f;
   color: #ffffff;
 }
 
-.table-thumb {
+.adm-table-thumb {
   width: 60px;
   height: 85px;
   object-fit: cover;
   border-radius: 4px;
 }
 
-.table-thumb-placeholder {
+.adm-table-thumb-placeholder {
   width: 60px;
   height: 85px;
   background-color: #2a2a2a;
@@ -289,12 +289,12 @@ html, body {
   border-radius: 4px;
 }
 
-.action-btns {
+.adm-action-btns {
   display: flex;
   gap: 0.5rem;
 }
 
-.edit-btn {
+.adm-edit-btn {
   background-color: #007bff;
   color: #ffffff;
   border: none;
@@ -304,7 +304,7 @@ html, body {
   font-weight: 600;
 }
 
-.delete-btn {
+.adm-delete-btn {
   background-color: #dc3545;
   color: #ffffff;
   border: none;
@@ -314,12 +314,12 @@ html, body {
   font-weight: 600;
 }
 
-.sidebar-overlay {
+.adm-sidebar-overlay {
   display: none;
 }
 
 /* Sembunyikan Mobile Container pada Layar Desktop */
-.mobile-cards-container {
+.adm-mobile-cards-container {
   display: none;
 }
 
@@ -329,11 +329,11 @@ html, body {
    ========================================== */
 
 @media (max-width: 1024px) {
-  .admin-layout {
+  .adm-admin-layout {
     flex-direction: column;
   }
 
-  .mobile-header {
+  .adm-mobile-header {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -346,7 +346,7 @@ html, body {
     width: 100%;
   }
 
-  .hamburger-btn {
+  .adm-hamburger-btn {
     background: none;
     border: none;
     color: #ffffff;
@@ -354,14 +354,14 @@ html, body {
     cursor: pointer;
   }
 
-  .mobile-logo {
+  .adm-mobile-logo {
     color: #ffffff;
     font-size: 1.1rem;
     margin: 0;
     font-weight: 700;
   }
 
-  .admin-sidebar {
+  .adm-admin-sidebar {
     position: fixed;
     top: 0;
     left: 0;
@@ -373,11 +373,11 @@ html, body {
     z-index: 999;
   }
 
-  .admin-sidebar.open {
+  .adm-admin-sidebar.open {
     transform: translateX(0);
   }
 
-  .close-sidebar-btn {
+  .adm-close-sidebar-btn {
     display: block;
     background: none;
     border: none;
@@ -386,7 +386,7 @@ html, body {
     cursor: pointer;
   }
 
-  .sidebar-overlay {
+  .adm-sidebar-overlay {
     display: block;
     position: fixed;
     inset: 0;
@@ -395,24 +395,24 @@ html, body {
     z-index: 990;
   }
 
-  .admin-content {
+  .adm-admin-content {
     padding: 1rem;
   }
 
-  .form-row {
+  .adm-form-row {
     grid-template-columns: 1fr;
   }
 
-  .form-actions {
+  .adm-form-actions {
     flex-direction: column;
   }
 
   /* SWAP TAMPILAN: Sembunyikan Tabel, Tampilkan Card Sketsa Kertas */
-  .desktop-only-table {
+  .adm-desktop-only-table {
     display: none !important;
   }
 
-  .mobile-cards-container {
+  .adm-mobile-cards-container {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
@@ -420,7 +420,7 @@ html, body {
   }
 
   /* BENTUK CARD DENGAN LAYOUT 2 KOLOM (SESUAI SKETSA) */
-  .sketch-card {
+  .adm-sketch-card {
     background-color: #181818;
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
@@ -428,7 +428,7 @@ html, body {
     width: 100%;
   }
 
-  .card-row {
+  .adm-card-row {
     display: grid;
     grid-template-columns: 110px 1fr; /* Kolom kiri 110px (label), kolom kanan sisa ruang (isi) */
     align-items: center;
@@ -436,23 +436,23 @@ html, body {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .card-row:last-child {
+  .adm-card-row:last-child {
     border-bottom: none;
   }
 
-  .card-label {
+  .adm-card-label {
     font-weight: 700;
     color: #ffffff;
     font-size: 0.95rem;
   }
 
-  .card-value {
+  .adm-card-value {
     color: #dddddd;
     font-size: 0.95rem;
     word-break: break-word;
   }
 
-  .card-empty-state {
+  .adm-card-empty-state {
     text-align: center;
     padding: 2rem;
     color: #888;
