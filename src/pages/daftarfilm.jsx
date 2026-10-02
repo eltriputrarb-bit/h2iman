@@ -80,6 +80,10 @@ export default function DaftarFilm() {
   const [loading, setLoading] = useState(true);
   const [activeVideo, setActiveVideo] = useState(null);
 
+  // --- FITUR PAGINATION / HALAMAN ---
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6; // Menampilkan 6 film per halaman (sesuai grid 3x2)
+
   useEffect(() => {
     fetch('/api/films?full=true')
       .then((res) => {
@@ -101,6 +105,12 @@ export default function DaftarFilm() {
       });
   }, []);
 
+  // Logika memotong array film sesuai halaman aktif
+  const indexOfLastFilm = currentPage * itemsPerPage;
+  const indexOfFirstFilm = indexOfLastFilm - itemsPerPage;
+  const currentFilms = films.slice(indexOfFirstFilm, indexOfLastFilm);
+  const totalPages = Math.ceil(films.length / itemsPerPage);
+
   if (loading) {
     return (
       <div className="page-container" style={{ textAlign: 'center', color: '#fff', paddingTop: '2rem' }}>
@@ -116,7 +126,7 @@ export default function DaftarFilm() {
       </div>
       
       <div className="movie-grid">
-        {films.map((film) => {
+        {currentFilms.map((film) => {
           const filmId = film._id || film.id;
           const filmTitle = film.judul || film.title;
           const filmImage = film.gambar || film.image;
@@ -161,6 +171,75 @@ export default function DaftarFilm() {
           );
         })}
       </div>
+
+      {/* --- NAVIGASI HALAMAN (1) (2) (3) --- */}
+      {totalPages > 1 && (
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          gap: '8px', 
+          marginTop: '2.5rem',
+          paddingBottom: '2rem' 
+        }}>
+          {/* Tombol Sebelumnya */}
+          <button 
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            style={{ 
+              padding: '8px 14px', 
+              borderRadius: '4px',
+              border: '1px solid #444',
+              backgroundColor: '#222',
+              color: '#fff',
+              cursor: currentPage === 1 ? 'not-allowed' : 'pointer', 
+              opacity: currentPage === 1 ? 0.4 : 1 
+            }}
+          >
+            &lt;
+          </button>
+
+          {/* Tombol Angka Halaman */}
+          {Array.from({ length: totalPages }, (_, index) => {
+            const pageNum = index + 1;
+            return (
+              <button
+                key={pageNum}
+                onClick={() => setCurrentPage(pageNum)}
+                style={{
+                  padding: '8px 14px',
+                  borderRadius: '4px',
+                  border: 'none',
+                  backgroundColor: currentPage === pageNum ? '#e50914' : '#333',
+                  color: '#fff',
+                  fontWeight: currentPage === pageNum ? 'bold' : 'normal',
+                  cursor: 'pointer',
+                  transition: '0.2s'
+                }}
+              >
+                {pageNum}
+              </button>
+            );
+          })}
+
+          {/* Tombol Selanjutnya */}
+          <button 
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            style={{ 
+              padding: '8px 14px', 
+              borderRadius: '4px',
+              border: '1px solid #444',
+              backgroundColor: '#222',
+              color: '#fff',
+              cursor: currentPage === totalPages ? 'not-allowed' : 'pointer', 
+              opacity: currentPage === totalPages ? 0.4 : 1 
+            }}
+          >
+            &gt;
+          </button>
+        </div>
+      )}
 
       <Lightbox 
         isOpen={Boolean(activeVideo)} 
