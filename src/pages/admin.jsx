@@ -11,6 +11,9 @@ export default function Admin({ onLogout }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  
+  // State untuk menampilkan notifikasi pesan sukses / error di dalam UI
+  const [statusMessage, setStatusMessage] = useState({ type: '', text: '' });
 
   const [form, setForm] = useState({
     judul: '',
@@ -23,7 +26,7 @@ export default function Admin({ onLogout }) {
     bintang: 5
   });
 
-  // Helper untuk mendapatkan token autentikasi
+  // Helper untuk mengambil token autentikasi dari browser
   const getAuthHeaders = () => {
     const token = localStorage.getItem('token') || localStorage.getItem('admin_token');
     return {
@@ -32,7 +35,7 @@ export default function Admin({ onLogout }) {
     };
   };
 
-  // Helper terpusat untuk menangani respons 401 (Sesi Berakhir / Token Dicuri / Diganti)
+  // Helper terpusat penanganan 401/403 (Sesi Berakhir / Token Dicuri / Diganti)
   const handleAuthError = (status) => {
     if (status === 401 || status === 403) {
       localStorage.removeItem('token');
@@ -49,6 +52,14 @@ export default function Admin({ onLogout }) {
     return false;
   };
 
+  // Tampilkan pesan status sementara (auto dismiss 5 detik)
+  const showNotification = (type, text) => {
+    setStatusMessage({ type, text });
+    setTimeout(() => {
+      setStatusMessage({ type: '', text: '' });
+    }, 5000);
+  };
+
   const fetchFilms = async () => {
     setLoading(true);
     try {
@@ -63,6 +74,7 @@ export default function Admin({ onLogout }) {
       setFilms(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('Error fetching films:', err);
+      showNotification('error', `Gagal memuat data: ${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -76,9 +88,16 @@ export default function Admin({ onLogout }) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // Upload gambar dengan penanganan batas ukuran file (Maks 2MB)
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        showNotification('error', 'Ukuran gambar terlalu besar! Maksimal 2MB.');
+        e.target.value = '';
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setForm((prev) => ({ ...prev, gambar: reader.result }));
@@ -104,16 +123,16 @@ export default function Admin({ onLogout }) {
       if (handleAuthError(res.status)) return;
 
       if (res.ok) {
-        alert(isEditing ? 'Film berhasil diperbarui!' : 'Film berhasil ditambahkan!');
+        showNotification('success', isEditing ? 'Film berhasil diperbarui!' : 'Film berhasil ditambahkan!');
         resetForm();
         await fetchFilms();
         setActiveTab('list');
       } else {
         const errData = await res.json().catch(() => ({}));
-        alert(`Gagal: ${errData.message || 'Terjadi kesalahan'}`);
+        showNotification('error', `Gagal: ${errData.message || 'Terjadi kesalahan pada server'}`);
       }
     } catch (err) {
-      alert(`Error: ${err.message}`);
+      showNotification('error', `Error: ${err.message}`);
     } finally {
       setSubmitting(false);
     }
@@ -148,14 +167,14 @@ export default function Admin({ onLogout }) {
       if (handleAuthError(res.status)) return;
 
       if (res.ok) {
-        alert('Film berhasil dihapus!');
+        showNotification('success', 'Film berhasil dihapus!');
         fetchFilms();
       } else {
         const errData = await res.json().catch(() => ({}));
-        alert(`Gagal menghapus: ${errData.message || 'Terjadi kesalahan'}`);
+        showNotification('error', `Gagal menghapus: ${errData.message || 'Terjadi kesalahan'}`);
       }
     } catch (err) {
-      alert(`Gagal menghapus: ${err.message}`);
+      showNotification('error', `Gagal menghapus: ${err.message}`);
     }
   };
 
@@ -256,6 +275,24 @@ export default function Admin({ onLogout }) {
 
       {/* MAIN CONTENT AREA */}
       <main className="adm-admin-content">
+        {/* BANNER NOTIFIKASI DALAM HALAMAN */}
+        {statusMessage.text && (
+          <div 
+            style={{
+              padding: '0.8rem 1.2rem',
+              borderRadius: '8px',
+              marginBottom: '1.5rem',
+              fontWeight: '600',
+              fontSize: '0.9rem',
+              backgroundColor: statusMessage.type === 'error' ? 'rgba(255, 77, 77, 0.15)' : 'rgba(76, 175, 80, 0.15)',
+              color: statusMessage.type === 'error' ? '#ff4d4d' : '#4caf50',
+              border: `1px solid ${statusMessage.type === 'error' ? '#ff4d4d' : '#4caf50'}`
+            }}
+          >
+            {statusMessage.text}
+          </div>
+        )}
+
         {activeTab === 'form' ? (
           <div className="adm-content-section">
             <h2 className="adm-section-title">{isEditing ? 'Edit Film' : 'Kelola Data Film'}</h2>
@@ -302,7 +339,7 @@ export default function Admin({ onLogout }) {
               </div>
 
               <div className="adm-form-group">
-                <label>Upload Gambar Poster</label>
+                <label>Upload Gambar Poster (Maks 2MB)</label>
                 <input type="file" accept="image/*" onChange={handleImageUpload} disabled={submitting} />
                 {form.gambar && (
                   <div className="adm-preview-container">
