@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import './admin.css';
 
 export default function Admin() {
   const [films, setFilms] = useState([]);
