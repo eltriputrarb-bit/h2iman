@@ -5,10 +5,13 @@ export default function Admin() {
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
   
-  // State Navigasi Sidebar ('form' atau 'list')
+  // State Navigasi Tab ('form' atau 'list')
   const [activeTab, setActiveTab] = useState('form');
 
-  // State Loading
+  // State Drawer Sidebar untuk Mobile
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // State Loading & Submitting
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -73,7 +76,7 @@ export default function Admin() {
         alert(isEditing ? 'Film berhasil diperbarui!' : 'Film berhasil ditambahkan!');
         resetForm();
         await fetchFilms();
-        setActiveTab('list'); // Pindah otomatis ke daftar film setelah berhasil simpan
+        setActiveTab('list');
       } else {
         const errData = await res.json();
         alert(`Gagal: ${errData.message}`);
@@ -98,7 +101,7 @@ export default function Admin() {
       kategori: film.kategori || 'Film',
       bintang: film.bintang || 5
     });
-    setActiveTab('form'); // Pindah ke tab form saat klik edit
+    setActiveTab('form');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -131,24 +134,57 @@ export default function Admin() {
     });
   };
 
+  // Fungsi navigasi menu sekaligus menutup drawer di mobile
+  const handleNavClick = (tab) => {
+    setActiveTab(tab);
+    setSidebarOpen(false);
+  };
+
   return (
     <div className="admin-layout">
-      {/* SIDEBAR NAVIGATION */}
-      <aside className="admin-sidebar">
+      {/* MOBILE TOPBAR */}
+      <header className="mobile-header">
+        <button 
+          className="hamburger-btn" 
+          onClick={() => setSidebarOpen(true)}
+          aria-label="Open Menu"
+        >
+          ☰
+        </button>
+        <h2 className="mobile-logo">🎬 Film Logo</h2>
+      </header>
+
+      {/* OVERLAY (Backdrop gelap saat sidebar terbuka di mobile) */}
+      {sidebarOpen && (
+        <div 
+          className="sidebar-overlay" 
+          onClick={() => setSidebarOpen(false)} 
+        />
+      )}
+
+      {/* SIDEBAR NAVIGATION (Slide-in Drawer di Mobile) */}
+      <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-logo">
           <h2>🎬 Film Logo</h2>
+          {/* Tombol Tutup Sidebar Khusus Mobile */}
+          <button 
+            className="close-sidebar-btn" 
+            onClick={() => setSidebarOpen(false)}
+          >
+            ✕
+          </button>
         </div>
         <nav className="sidebar-menu">
           <button 
             className={`menu-item ${activeTab === 'form' ? 'active' : ''}`}
-            onClick={() => setActiveTab('form')}
+            onClick={() => handleNavClick('form')}
           >
             <span>Data Film</span>
             <span className="arrow">›</span>
           </button>
           <button 
             className={`menu-item ${activeTab === 'list' ? 'active' : ''}`}
-            onClick={() => setActiveTab('list')}
+            onClick={() => handleNavClick('list')}
           >
             <span>Daftar Film Terdaftar</span>
             <span className="arrow">›</span>
