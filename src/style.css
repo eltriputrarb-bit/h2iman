@@ -1187,3 +1187,206 @@ body {
 .detail-poster-wrapper img:nth-of-type(n+2) {
   display: none !important;
 }
+
+/* ==========================================
+   ADMIN PANEL STYLES
+   ========================================== */
+
+.admin-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.section-title {
+  color: #ffffff;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+/* Form Management */
+.admin-form {
+  background-color: #181818;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-bottom: 2.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  color: #e0e0e0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.admin-form input[type="text"],
+.admin-form select,
+.admin-form textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: #222222;
+  border: 1px solid #333333;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 0.95rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.admin-form input[type="text"]:focus,
+.admin-form select:focus,
+.admin-form textarea:focus {
+  border-color: #e50914;
+}
+
+.admin-form input[type="file"] {
+  color: #aaaaaa;
+  font-size: 0.9rem;
+}
+
+.preview-container {
+  margin-top: 0.5rem;
+}
+
+.admin-poster-preview {
+  width: 100px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.submit-btn {
+  background-color: #e50914;
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-btn:hover {
+  background-color: #f6121d;
+}
+
+.cancel-btn {
+  background-color: #444444;
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background-color: #555555;
+}
+
+/* Tabel Admin */
+.admin-table-wrapper {
+  background-color: #181818;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-x: auto;
+}
+
+.admin-table-wrapper h3 {
+  color: #ffffff;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: #dddddd;
+  font-size: 0.92rem;
+  vertical-align: middle;
+}
+
+.admin-table th {
+  background-color: #222222;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.table-thumb {
+  width: 50px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.action-btns {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.edit-btn {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.edit-btn:hover {
+  background-color: #0056b3;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: #ffffff;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.delete-btn:hover {
+  background-color: #bd2130;
+}
+
+/* Responsive Table & Form */
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
