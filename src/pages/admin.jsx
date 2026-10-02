@@ -5,14 +5,8 @@ export default function Admin() {
   const [films, setFilms] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
-  
-  // State Navigasi Tab ('form' atau 'list')
   const [activeTab, setActiveTab] = useState('form');
-
-  // State Drawer Sidebar untuk Mobile / Tablet
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  // State Loading & Submitting
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -27,23 +21,13 @@ export default function Admin() {
     bintang: 5
   });
 
-  // Ambil Data Film dari Server
   const fetchFilms = async () => {
     setLoading(true);
     try {
-      // Menambahkan timestamp query parameter agar terhindar dari cache browser mobile
       const res = await fetch(`/api/films?full=true&t=${Date.now()}`);
-      
-      if (!res.ok) {
-        throw new Error(`HTTP error! Status: ${res.status}`);
-      }
-
+      if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
       const data = await res.json();
-      if (Array.isArray(data)) {
-        setFilms(data);
-      } else {
-        setFilms([]);
-      }
+      setFilms(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('Error fetching films:', err);
     } finally {
@@ -59,7 +43,6 @@ export default function Admin() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // Handler Upload Poster Gambar (Base64)
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -71,7 +54,6 @@ export default function Admin() {
     }
   };
 
-  // Handler Tambah & Edit Film
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
@@ -102,7 +84,6 @@ export default function Admin() {
     }
   };
 
-  // Set Data saat Tombol Edit Diklik
   const handleEdit = (film) => {
     setIsEditing(true);
     setEditId(film._id);
@@ -120,7 +101,6 @@ export default function Admin() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Handler Hapus Film
   const handleDelete = async (id) => {
     if (!window.confirm('Yakin ingin menghapus film ini?')) return;
 
@@ -155,7 +135,7 @@ export default function Admin() {
 
   const handleNavClick = (tab) => {
     setActiveTab(tab);
-    setSidebarOpen(false); // Tutup sidebar otomatis setelah menu diklik di layar mobile
+    setSidebarOpen(false);
   };
 
   return (
@@ -172,7 +152,7 @@ export default function Admin() {
         <h2 className="mobile-logo">🎬 Film Logo</h2>
       </header>
 
-      {/* OVERLAY BACKDROP MOBILE */}
+      {/* OVERLAY BACKDROP */}
       {sidebarOpen && (
         <div 
           className="sidebar-overlay" 
@@ -320,7 +300,8 @@ export default function Admin() {
                 </button>
               </div>
 
-              <table className="admin-table">
+              {/* VIEW 1: TABEL UNTUK DESKTOP */}
+              <table className="admin-table desktop-only-table">
                 <thead>
                   <tr>
                     <th>Poster</th>
@@ -367,6 +348,56 @@ export default function Admin() {
                   )}
                 </tbody>
               </table>
+
+              {/* VIEW 2: KERTAS / CARD UNTUK MOBILE (SESUAI SKETSA) */}
+              <div className="mobile-cards-container">
+                {loading ? (
+                  <div className="card-empty-state">Sedang memuat data film...</div>
+                ) : films.length === 0 ? (
+                  <div className="card-empty-state">Belum ada film terdaftar.</div>
+                ) : (
+                  films.map((f) => (
+                    <div className="sketch-card" key={f._id}>
+                      <div className="card-row">
+                        <div className="card-label">Poster</div>
+                        <div className="card-value">
+                          {f.gambar ? (
+                            <img src={f.gambar} alt={f.judul} className="table-thumb" />
+                          ) : (
+                            <div className="table-thumb-placeholder">No Image</div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="card-row">
+                        <div className="card-label">Judul</div>
+                        <div className="card-value">{f.judul}</div>
+                      </div>
+
+                      <div className="card-row">
+                        <div className="card-label">Tahun</div>
+                        <div className="card-value">{f.tahun}</div>
+                      </div>
+
+                      <div className="card-row">
+                        <div className="card-label">Bintang</div>
+                        <div className="card-value">★ {f.bintang || 5}</div>
+                      </div>
+
+                      <div className="card-row">
+                        <div className="card-label">Aksi</div>
+                        <div className="card-value">
+                          <div className="action-btns">
+                            <button onClick={() => handleEdit(f)} className="edit-btn" disabled={submitting}>Edit</button>
+                            <button onClick={() => handleDelete(f._id)} className="delete-btn" disabled={submitting}>Hapus</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
             </div>
           </div>
         )}

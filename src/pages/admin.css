@@ -26,6 +26,7 @@ html, body {
   overflow-x: hidden;
 }
 
+/* Header & Drawer Controls */
 .mobile-header,
 .close-sidebar-btn {
   display: none;
@@ -88,6 +89,10 @@ html, body {
   color: #ffffff;
 }
 
+.menu-item .arrow {
+  font-size: 1.2rem;
+}
+
 .admin-content {
   flex: 1 1 auto;
   padding: 2.5rem;
@@ -111,13 +116,117 @@ html, body {
   font-weight: 700;
 }
 
-/* Tabel Desktop Biasa */
+/* Form Styles */
+.admin-form {
+  background-color: #141414;
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  width: 100%;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  color: #e0e0e0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.admin-form input[type="text"],
+.admin-form select,
+.admin-form textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: #222222;
+  border: 1px solid #333333;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.admin-form input[type="text"]:focus,
+.admin-form select:focus,
+.admin-form textarea:focus {
+  border-color: #e50914;
+}
+
+.admin-form select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23ffffff' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1.2rem;
+  padding-right: 2.5rem;
+}
+
+.preview-container {
+  margin-top: 0.5rem;
+}
+
+.admin-poster-preview {
+  width: 100px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.submit-btn {
+  background-color: #e50914;
+  color: #ffffff;
+  padding: 0.8rem 1.8rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: #f40612;
+}
+
+.cancel-btn {
+  background-color: #333333;
+  color: #ffffff;
+  padding: 0.8rem 1.8rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+/* Container Tabel */
 .admin-table-wrapper {
   background-color: #141414;
   padding: 1.5rem;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  overflow-x: auto;
   width: 100%;
 }
 
@@ -141,29 +250,42 @@ html, body {
   cursor: pointer;
 }
 
-.admin-table {
+/* Tampilan Desktop Table (Bawaan Display On) */
+.desktop-only-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
 }
 
-.admin-table th,
-.admin-table td {
+.desktop-only-table th,
+.desktop-only-table td {
   padding: 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   color: #dddddd;
   font-size: 0.92rem;
 }
 
-.admin-table th {
+.desktop-only-table th {
   background-color: #1f1f1f;
   color: #ffffff;
 }
 
 .table-thumb {
-  width: 50px;
-  height: 70px;
+  width: 60px;
+  height: 85px;
   object-fit: cover;
+  border-radius: 4px;
+}
+
+.table-thumb-placeholder {
+  width: 60px;
+  height: 85px;
+  background-color: #2a2a2a;
+  color: #888888;
+  font-size: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 4px;
 }
 
@@ -196,8 +318,14 @@ html, body {
   display: none;
 }
 
+/* Sembunyikan Mobile Container pada Layar Desktop */
+.mobile-cards-container {
+  display: none;
+}
+
+
 /* ==========================================
-   TAMPILAN RESPONSIF / KERTAS (MOBILE & TABLET <= 1024px)
+   TAMPILAN RESPONSIF (<= 1024px, iPhone & iPad)
    ========================================== */
 
 @media (max-width: 1024px) {
@@ -271,78 +399,62 @@ html, body {
     padding: 1rem;
   }
 
-  /* --- SETUP TAMPILAN SESUAI SKETSA KERTAS --- */
-  
-  /* Sembunyikan header tabel horizontal desktop */
-  .admin-table thead {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  /* SWAP TAMPILAN: Sembunyikan Tabel, Tampilkan Card Sketsa Kertas */
+  .desktop-only-table {
     display: none !important;
   }
 
-  .admin-table, 
-  .admin-table tbody, 
-  .admin-table tr, 
-  .admin-table td {
-    display: block !important;
-    width: 100% !important;
+  .mobile-cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: 100%;
   }
 
-  /* Setiap baris (1 film) menjadi 1 Kartu Berbingkai */
-  .admin-table tbody tr {
-    margin-bottom: 1.5rem !important;
-    background-color: #181818 !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    border-radius: 8px !important;
-    overflow: hidden !important;
-    padding: 0 !important;
+  /* BENTUK CARD DENGAN LAYOUT 2 KOLOM (SESUAI SKETSA) */
+  .sketch-card {
+    background-color: #181818;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
   }
 
-  /* Format 2 Kolom (Kiri: Nama Field, Kanan: Isi Data) */
-  .admin-table td {
-    display: grid !important;
-    grid-template-columns: 100px 1fr !important; /* Kolom kiri fixed 100px, kanan fleksibel */
-    align-items: center !important;
-    padding: 0.75rem 1rem !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-    text-align: left !important;
+  .card-row {
+    display: grid;
+    grid-template-columns: 110px 1fr; /* Kolom kiri 110px (label), kolom kanan sisa ruang (isi) */
+    align-items: center;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .admin-table td:last-child {
-    border-bottom: none !important;
+  .card-row:last-child {
+    border-bottom: none;
   }
 
-  /* Label Kiri Sesuai Urutan Kolom */
-  .admin-table td:nth-child(1)::before {
-    content: "Poster";
+  .card-label {
     font-weight: 700;
     color: #ffffff;
+    font-size: 0.95rem;
   }
 
-  .admin-table td:nth-child(2)::before {
-    content: "Judul";
-    font-weight: 700;
-    color: #ffffff;
+  .card-value {
+    color: #dddddd;
+    font-size: 0.95rem;
+    word-break: break-word;
   }
 
-  .admin-table td:nth-child(3)::before {
-    content: "Tahun";
-    font-weight: 700;
-    color: #ffffff;
-  }
-
-  .admin-table td:nth-child(4)::before {
-    content: "Bintang";
-    font-weight: 700;
-    color: #ffffff;
-  }
-
-  .admin-table td:nth-child(5)::before {
-    content: "Aksi";
-    font-weight: 700;
-    color: #ffffff;
-  }
-
-  .action-btns {
-    display: flex !important;
-    gap: 0.5rem !important;
+  .card-empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: #888;
   }
 }
