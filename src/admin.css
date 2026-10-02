@@ -2,6 +2,10 @@
    ADMIN LAYOUT & BASE STYLES
    ========================================== */
 
+* {
+  box-sizing: border-box;
+}
+
 .admin-layout {
   display: flex;
   min-height: 100vh;
@@ -91,13 +95,12 @@
   overflow-y: auto;
   min-width: 0;
   width: 100%;
-  box-sizing: border-box;
 }
 
 .content-section {
   width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .section-title {
@@ -118,7 +121,6 @@
   gap: 1.2rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   width: 100%;
-  box-sizing: border-box;
 }
 
 .form-group {
@@ -150,7 +152,6 @@
   color: #ffffff;
   font-size: 0.95rem;
   outline: none;
-  box-sizing: border-box;
 }
 
 .admin-form select {
@@ -161,6 +162,18 @@
   background-position: right 0.75rem center;
   background-size: 1.2rem;
   padding-right: 2.5rem;
+}
+
+.preview-container {
+  margin-top: 0.5rem;
+}
+
+.admin-poster-preview {
+  width: 90px;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .form-actions {
@@ -197,7 +210,6 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   overflow-x: auto;
   width: 100%;
-  box-sizing: border-box;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -206,6 +218,8 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .refresh-btn {
@@ -223,7 +237,7 @@
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  min-width: 500px;
+  min-width: 480px;
 }
 
 .admin-table th,
@@ -244,6 +258,19 @@
   height: 68px;
   object-fit: cover;
   border-radius: 4px;
+}
+
+.table-thumb-placeholder {
+  width: 48px;
+  height: 68px;
+  background-color: #333;
+  color: #888;
+  font-size: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  text-align: center;
 }
 
 .action-btns {
@@ -270,10 +297,11 @@
 }
 
 /* ==========================================
-   RESPONSIVE DESIGN (MOBILE / TABLET)
+   RESPONSIVE DESIGN (TABLET & MOBILE)
    ========================================== */
 
-@media (max-width: 768px) {
+/* Dinaikkan ke 1024px agar mode tablet/dev tools tidak kejepit */
+@media (max-width: 1024px) {
   .admin-layout {
     flex-direction: column;
   }
@@ -282,7 +310,7 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    padding: 1rem;
+    padding: 1rem 1.25rem;
     background-color: #141414;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     position: sticky;
@@ -296,6 +324,7 @@
     color: #ffffff;
     font-size: 1.5rem;
     cursor: pointer;
+    line-height: 1;
   }
 
   .mobile-logo {
@@ -344,6 +373,12 @@
     padding: 1rem;
   }
 
+  .admin-table-wrapper {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
   .form-row {
     grid-template-columns: 1fr;
   }
@@ -354,5 +389,11 @@
 
   .action-btns {
     flex-direction: column;
+  }
+
+  .admin-table th, 
+  .admin-table td {
+    padding: 0.6rem 0.5rem;
+    font-size: 0.85rem;
   }
 }
