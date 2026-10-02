@@ -895,10 +895,10 @@ body {
 }
 
 /* ==========================================
-   DETAIL FILM MODAL (FULL RESPONSIVE)
+   DETAIL FILM MODAL (ANIMATED & RESPONSIVE)
    ========================================== */
 
-/* Overlay Gelap Transparan di Belakang Modal */
+/* Overlay Gelap Transparan dengan Efek Fade-In */
 .detail-page-wrapper {
   position: fixed;
   top: 0;
@@ -906,15 +906,18 @@ body {
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
   padding: 1.5rem;
   box-sizing: border-box;
+  animation: overlayFadeIn 0.3s ease-out forwards;
 }
 
+/* Tombol Kembali (Pojok Kiri Atas Modal) */
 .back-link {
   position: absolute;
   top: 20px;
@@ -923,34 +926,40 @@ body {
   text-decoration: none;
   font-weight: 600;
   font-size: 0.95rem;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 6px 14px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 8px 16px;
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   z-index: 10000;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .back-link:hover {
   background: #e50914;
   border-color: #e50914;
+  transform: translateX(-3px);
+  box-shadow: 0 4px 12px rgba(229, 9, 20, 0.4);
 }
 
-/* Kartu Utama Detail Film (PC: 2 Kolom menyamping | HP: 1 Kolom ke bawah) */
+/* Kartu Utama Detail Film dengan Animasi Pop-Up */
 .detail-card {
   position: relative;
   width: 100%;
-  max-width: 920px; /* Diperlebar agar gagah dan tidak sempit di Laptop/PC */
+  max-width: 920px;
   background-color: #181818;
-  border-radius: 14px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
   display: flex;
-  flex-direction: column; /* Default stack untuk layar HP */
-  border: 1px solid #2e2e2e;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   max-height: 90vh;
   overflow-y: auto;
   box-sizing: border-box;
+  animation: cardPopUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Modal Mode Admin */
@@ -967,7 +976,7 @@ body {
   z-index: 20;
   background: rgba(0, 0, 0, 0.6);
   color: #ffffff;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   font-size: 1.1rem;
   width: 36px;
   height: 36px;
@@ -976,12 +985,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .detail-close-btn:hover {
   background: #e50914;
-  transform: scale(1.1);
+  border-color: #e50914;
+  transform: rotate(90deg) scale(1.1);
 }
 
 /* Area Gambar Poster / Banner */
@@ -1003,15 +1013,17 @@ body {
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.5s ease;
+}
+
+.detail-card:hover .detail-poster {
+  transform: scale(1.03);
 }
 
 .detail-poster-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(24, 24, 24, 1) 0%, rgba(24, 24, 24, 0) 70%);
+  inset: 0;
+  background: linear-gradient(to top, #181818 0%, rgba(24, 24, 24, 0) 75%);
   pointer-events: none;
 }
 
@@ -1025,11 +1037,12 @@ body {
 }
 
 .detail-title {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 800;
   margin: 0 0 1rem 0;
   line-height: 1.2;
   color: #ffffff;
+  letter-spacing: -0.5px;
 }
 
 /* Badges / Tags (Tahun, Rating, Kategori) */
@@ -1043,23 +1056,25 @@ body {
 
 .badge,
 .detail-tag {
-  background-color: #2a2a2a;
+  background-color: rgba(255, 255, 255, 0.08);
   color: #e0e0e0;
-  padding: 0.35rem 0.8rem;
+  padding: 0.35rem 0.85rem;
   border-radius: 6px;
   font-size: 0.85rem;
   font-weight: 600;
-  border: 1px solid #3a3a3a;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: background-color 0.2s ease;
 }
 
 .badge-outline {
   background: transparent;
-  border-color: #666;
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .badge-kategori {
   background-color: #e50914;
   border-color: #e50914;
+  color: #ffffff;
 }
 
 /* Rating Bintang */
@@ -1073,11 +1088,13 @@ body {
 .star-icon {
   color: #444444;
   font-size: 1.3rem;
-  margin-right: 2px;
+  margin-right: 3px;
+  transition: color 0.2s ease;
 }
 
 .star-icon.active {
   color: #ffd700;
+  filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.4));
 }
 
 /* Deskripsi Teks */
@@ -1088,7 +1105,7 @@ body {
   margin-bottom: 1.8rem;
 }
 
-/* Tombol Tonton Trailer / Mulai */
+/* Tombol Mulai (Membuka YouTube di Tab Baru) */
 .watch-trailer-btn,
 .detail-start-btn {
   display: inline-flex;
@@ -1096,21 +1113,52 @@ body {
   justify-content: center;
   background-color: #e50914;
   color: #ffffff;
-  padding: 0.75rem 1.8rem;
+  padding: 0.8rem 2rem;
   font-size: 1rem;
   font-weight: 700;
-  border-radius: 6px;
+  border-radius: 8px;
   text-decoration: none;
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   width: fit-content;
+  box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
 }
 
 .watch-trailer-btn:hover,
 .detail-start-btn:hover {
-  background-color: #f6121d;
-  transform: translateY(-2px);
+  background-color: #ff0f1b;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(229, 9, 20, 0.5);
+}
+
+.watch-trailer-btn:active,
+.detail-start-btn:active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+/* ==========================================
+   ANIMASI SMOOTH (FADE & POP UP)
+   ========================================== */
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes cardPopUp {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 /* ==========================================
@@ -1155,7 +1203,7 @@ body {
   background-color: #222222;
   color: #ffffff;
   box-sizing: border-box;
-  font-size: 1rem; /* Mencegah auto-zoom di browser iOS iPhone */
+  font-size: 1rem;
 }
 
 .form-row,
@@ -1260,28 +1308,28 @@ body {
 /* Layout 2 Kolom khusus Layar Desktop / Monitor PC (>= 768px) */
 @media (min-width: 768px) {
   .detail-card {
-    flex-direction: row; /* Poster di kiri, Teks di kanan */
+    flex-direction: row;
     align-items: stretch;
     max-height: 80vh;
     overflow: hidden;
   }
 
   .detail-poster-wrapper {
-    width: 45%; /* Ambil 45% lebar modal */
+    width: 45%;
     height: auto;
     min-height: 420px;
   }
 
   .detail-info,
   .detail-content {
-    width: 55%; /* Ambil 55% lebar modal */
+    width: 55%;
     padding: 2.5rem;
-    overflow-y: auto; /* Teks di-scroll internal jika panjang */
+    overflow-y: auto;
     justify-content: center;
   }
 
   .detail-poster-overlay {
-    background: linear-gradient(to right, rgba(24, 24, 24, 0) 60%, rgba(24, 24, 24, 1) 100%);
+    background: linear-gradient(to right, #181818 0%, rgba(24, 24, 24, 0) 30%, rgba(24, 24, 24, 1) 100%);
   }
 
   .form-grid-4 {
@@ -1310,7 +1358,7 @@ body {
   }
 
   .detail-title {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
 
   .watch-trailer-btn,
@@ -1321,11 +1369,10 @@ body {
 
   .form-row,
   .form-grid-4 {
-    grid-template-columns: 1fr; /* Form jadi 1 kolom di HP */
+    grid-template-columns: 1fr;
   }
 }
 
-/* Menjaga poster agar selalu memenuhi container kiri dan tidak menumpuk */
 .detail-poster-wrapper img {
   width: 100%;
   height: 100%;
@@ -1334,7 +1381,6 @@ body {
   display: block;
 }
 
-/* Jika ada elemen img ganda yang muncul tidak sengaja, sembunyikan gambar kedua */
 .detail-poster-wrapper img:nth-of-type(n+2) {
   display: none !important;
 }
