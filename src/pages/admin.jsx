@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../admin.css';
+import './admin.css';
 
 export default function Admin() {
   const [films, setFilms] = useState([]);
@@ -9,7 +9,7 @@ export default function Admin() {
   // State Navigasi Tab ('form' atau 'list')
   const [activeTab, setActiveTab] = useState('form');
 
-  // State Drawer Sidebar untuk Mobile
+  // State Drawer Sidebar untuk Mobile / Tablet
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // State Loading & Submitting
@@ -27,10 +27,11 @@ export default function Admin() {
     bintang: 5
   });
 
+  // Ambil Data Film dari Server
   const fetchFilms = async () => {
     setLoading(true);
     try {
-      // Tambahkan timestamp query parameter untuk menghindari caching di browser mobile
+      // Menambahkan timestamp query parameter agar terhindar dari cache browser mobile
       const res = await fetch(`/api/films?full=true&t=${Date.now()}`);
       
       if (!res.ok) {
@@ -58,6 +59,7 @@ export default function Admin() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // Handler Upload Poster Gambar (Base64)
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -69,6 +71,7 @@ export default function Admin() {
     }
   };
 
+  // Handler Tambah & Edit Film
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
@@ -99,6 +102,7 @@ export default function Admin() {
     }
   };
 
+  // Set Data saat Tombol Edit Diklik
   const handleEdit = (film) => {
     setIsEditing(true);
     setEditId(film._id);
@@ -116,6 +120,7 @@ export default function Admin() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Handler Hapus Film
   const handleDelete = async (id) => {
     if (!window.confirm('Yakin ingin menghapus film ini?')) return;
 
@@ -150,7 +155,7 @@ export default function Admin() {
 
   const handleNavClick = (tab) => {
     setActiveTab(tab);
-    setSidebarOpen(false);
+    setSidebarOpen(false); // Tutup sidebar otomatis setelah menu diklik di layar mobile
   };
 
   return (
