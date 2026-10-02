@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 
-// Helper untuk mengubah URL embed YouTube menjadi URL tonton biasa jika diperlukan
 const getWatchUrl = (url) => {
   if (!url) return '#';
   if (url.includes('youtube.com/embed/')) {
@@ -13,6 +12,7 @@ const getWatchUrl = (url) => {
 
 export default function DetailFilm() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [film, setFilm] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -72,25 +72,33 @@ export default function DetailFilm() {
   const youtubeUrl = getWatchUrl(film.trailer);
 
   return (
-    <div className="detail-page-wrapper">
-      <Link to="/" className="back-link">
-        &lt; Kembali
-      </Link>
+    <div className="detail-page-wrapper" onClick={() => navigate('/')}>
+      <div className="detail-card" onClick={(e) => e.stopPropagation()}>
+        
+        {/* Tombol Tutup Silang (✕) */}
+        <button 
+          className="detail-close-btn" 
+          onClick={() => navigate('/')}
+          aria-label="Tutup Detail Film"
+        >
+          ✕
+        </button>
 
-      <div className="detail-card">
-        {/* Gambar Poster */}
+        {/* Banner Gambar Atas */}
         <div className="detail-poster-wrapper">
           <img src={film.gambar} alt={film.judul} className="detail-poster" />
           <div className="detail-poster-overlay"></div>
         </div>
 
+        {/* Informasi Detail Film */}
         <div className="detail-info">
           <h1 className="detail-title">{film.judul}</h1>
 
           <div className="detail-badges">
             <span className="badge">{film.tahun || '2026'}</span>
-            <span className="badge badge-outline">{film.rating || '13+'}</span>
-            <span className="badge badge-kategori">{film.kategori || 'Film'}</span>
+            <span className="badge badge-outline">{film.rating || '18+'}</span>
+            <span className="badge badge-outline">Film</span>
+            <span className="badge badge-kategori">{film.kategori || 'Dokumenter'}</span>
           </div>
 
           <div className="detail-rating">
@@ -107,12 +115,12 @@ export default function DetailFilm() {
               target="_blank" 
               rel="noopener noreferrer" 
               className="watch-trailer-btn"
-              style={{ textDecoration: 'none', display: 'inline-block' }}
             >
               Mulai &gt;
             </a>
           )}
         </div>
+
       </div>
     </div>
   );
