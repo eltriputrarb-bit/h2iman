@@ -54,7 +54,10 @@ export default function DetailFilm() {
               setTahun(apiFilm.tahun || '2026');
               setRating(apiFilm.rating || '13+');
               setKategori(apiFilm.kategori || apiFilm.genre || 'Film');
-              setBintang(apiFilm.bintang || 5);
+              
+              // FIX 1: Pastikan bintang dibaca dan dikonversi tegas ke Number
+              const ratingBintang = apiFilm.bintang !== undefined ? Number(apiFilm.bintang) : 5;
+              setBintang(isNaN(ratingBintang) ? 5 : ratingBintang);
             }
             setLoading(false);
           })
@@ -72,7 +75,7 @@ export default function DetailFilm() {
           setTahun(localFilm.tahun || '2026');
           setRating(localFilm.rating || '13+');
           setKategori(localFilm.kategori || localFilm.genre || 'Film');
-          setBintang(localFilm.bintang || 5);
+          setBintang(Number(localFilm.bintang) || 5);
         }
         setLoading(false);
       }
@@ -96,6 +99,7 @@ export default function DetailFilm() {
     e.preventDefault();
     setIsSubmitting(true);
 
+    // FIX 2: Pastikan payload bintang bertipe Number
     const filmData = { 
       judul, 
       gambar: gambarUrl, 
@@ -104,7 +108,7 @@ export default function DetailFilm() {
       tahun,
       rating,
       kategori,
-      bintang
+      bintang: Number(bintang)
     };
 
     const isValidMongoId = id && /^[0-9a-fA-F]{24}$/.test(id);
@@ -146,13 +150,15 @@ export default function DetailFilm() {
     }
   };
 
+  // Render bintang sesuai jumlah rating
   const renderStars = (count) => {
     const stars = [];
+    const currentRating = Number(count) || 5;
     for (let i = 1; i <= 5; i++) {
       stars.push(
         <span 
           key={i} 
-          className={`star-icon ${i <= count ? 'active' : ''}`}
+          className={`star-icon ${i <= currentRating ? 'active' : ''}`}
         >
           ★
         </span>
