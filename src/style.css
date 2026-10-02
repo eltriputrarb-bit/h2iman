@@ -898,7 +898,6 @@ body {
    DETAIL FILM MODAL (DESKTOP, ANDROID & IPHONE)
    ========================================== */
 
-/* Overlay Gelap Transparan dengan Blur & Animasi Fade-In */
 .detail-page-wrapper {
   position: fixed;
   top: 0;
@@ -907,7 +906,7 @@ body {
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px); /* Dukungan khusus iOS / Safari iPhone */
+  -webkit-backdrop-filter: blur(10px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -917,7 +916,6 @@ body {
   animation: overlayFadeIn 0.3s ease-out forwards;
 }
 
-/* Kartu Utama Modal */
 .detail-card {
   position: relative;
   width: 100%;
@@ -932,11 +930,10 @@ body {
   max-height: 90vh;
   overflow-y: auto;
   box-sizing: border-box;
-  -webkit-overflow-scrolling: touch; /* Momentum scrolling di iPhone */
+  -webkit-overflow-scrolling: touch;
   animation: cardPopUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Tombol Tutup Silang Bulat (✕) */
 .detail-close-btn {
   position: absolute;
   top: 15px;
@@ -964,7 +961,6 @@ body {
   transform: scale(1.1);
 }
 
-/* Banner Gambar Atas */
 .detail-poster-wrapper {
   position: relative;
   width: 100%;
@@ -986,7 +982,6 @@ body {
   display: block;
 }
 
-/* Gradasi Gelap Memudar Ke Bawah */
 .detail-poster-overlay {
   position: absolute;
   inset: 0;
@@ -999,7 +994,6 @@ body {
   pointer-events: none;
 }
 
-/* Area Informasi Teks */
 .detail-info,
 .detail-content {
   padding: 1.5rem 2rem 2rem 2rem;
@@ -1018,7 +1012,6 @@ body {
   text-transform: uppercase;
 }
 
-/* Badges / Tags */
 .detail-badges,
 .detail-tags {
   display: flex;
@@ -1050,7 +1043,43 @@ body {
 }
 
 /* ==========================================
-   RATING BINTANG SKETSA (OUTLINE / HOLLOW STAR)
+   TOMBOL MULAI MERAH
+   ========================================== */
+
+.watch-trailer-btn,
+.detail-start-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e50914; /* Merah */
+  color: #ffffff;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 6px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  width: fit-content;
+  box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
+  margin-top: 4px;
+}
+
+.watch-trailer-btn:hover,
+.detail-start-btn:hover {
+  background-color: #f6121d;
+  transform: scale(1.03);
+  box-shadow: 0 6px 20px rgba(229, 9, 20, 0.6);
+}
+
+.watch-trailer-btn:active,
+.detail-start-btn:active {
+  transform: scale(0.98);
+}
+
+/* ==========================================
+   RATING BINTANG KUNING
    ========================================== */
 
 .detail-rating,
@@ -1062,60 +1091,20 @@ body {
 
 .star-icon {
   font-size: 1.5rem;
-  color: rgba(255, 255, 255, 0.2);
+  color: #444444;
   transition: all 0.2s ease;
 }
 
-/* Bintang Aktif Mengikuti Gaya Sketsa Kertas */
 .star-icon.active {
-  color: transparent;
-  -webkit-text-stroke: 1.5px #ffffff; /* Efek garis outline bintang */
-  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.6));
+  color: #ffd700; /* Kuning Emas */
+  filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.6));
 }
 
-/* Deskripsi Teks */
 .detail-description {
   font-size: 0.95rem;
   color: #cccccc;
   line-height: 1.6;
   margin: 0;
-}
-
-/* ==========================================
-   TOMBOL MULAI SKETSA (OUTLINE ROUNDED BUTTON)
-   ========================================== */
-
-.watch-trailer-btn,
-.detail-start-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent;
-  color: #ffffff;
-  padding: 0.65rem 1.8rem;
-  font-size: 1.05rem;
-  font-weight: 600;
-  border-radius: 10px; /* Sudut melengkung halus sesuai gambar kertas */
-  border: 2px solid #ffffff; /* Garis bingkai tebal sesuai gambar kertas */
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  width: fit-content;
-  margin-top: 10px;
-  box-sizing: border-box;
-}
-
-.watch-trailer-btn:hover,
-.detail-start-btn:hover {
-  background-color: #ffffff;
-  color: #000000;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.25);
-}
-
-.watch-trailer-btn:active,
-.detail-start-btn:active {
-  transform: translateY(0) scale(0.98);
 }
 
 /* ==========================================
@@ -1142,7 +1131,6 @@ body {
    MEDIA QUERIES (DESKTOP, ANDROID & IPHONE)
    ========================================== */
 
-/* Tampilan Desktop & Laptop (>= 768px) */
 @media (min-width: 768px) {
   .detail-card {
     max-width: 680px;
@@ -1153,7 +1141,6 @@ body {
   }
 }
 
-/* Tampilan HP Android & iPhone (< 768px) */
 @media (max-width: 767px) {
   .detail-page-wrapper {
     padding: 0.6rem;
@@ -1181,12 +1168,11 @@ body {
   .watch-trailer-btn,
   .detail-start-btn {
     width: 100%;
-    padding: 0.8rem;
+    padding: 0.85rem;
     font-size: 1.05rem;
   }
 }
 
-/* Gambar Poster Safetynet */
 .detail-poster-wrapper img {
   width: 100%;
   height: 100%;
