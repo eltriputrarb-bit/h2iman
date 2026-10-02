@@ -29,9 +29,19 @@ export default function Admin() {
   const fetchFilms = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/films?full=true');
+      // Tambahkan timestamp query parameter untuk menghindari caching di browser mobile
+      const res = await fetch(`/api/films?full=true&t=${Date.now()}`);
+      
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+
       const data = await res.json();
-      if (Array.isArray(data)) setFilms(data);
+      if (Array.isArray(data)) {
+        setFilms(data);
+      } else {
+        setFilms([]);
+      }
     } catch (err) {
       console.error('Error fetching films:', err);
     } finally {
@@ -79,7 +89,7 @@ export default function Admin() {
         setActiveTab('list');
       } else {
         const errData = await res.json();
-        alert(`Gagal: ${errData.message}`);
+        alert(`Gagal: ${errData.message || 'Terjadi kesalahan'}`);
       }
     } catch (err) {
       alert(`Error: ${err.message}`);
@@ -113,6 +123,9 @@ export default function Admin() {
       if (res.ok) {
         alert('Film berhasil dihapus!');
         fetchFilms();
+      } else {
+        const errData = await res.json();
+        alert(`Gagal menghapus: ${errData.message}`);
       }
     } catch (err) {
       alert(`Gagal menghapus: ${err.message}`);
@@ -328,7 +341,11 @@ export default function Admin() {
                     films.map((f) => (
                       <tr key={f._id}>
                         <td>
-                          <img src={f.gambar} alt={f.judul} className="table-thumb" />
+                          {f.gambar ? (
+                            <img src={f.gambar} alt={f.judul} className="table-thumb" />
+                          ) : (
+                            <div className="table-thumb-placeholder">No Image</div>
+                          )}
                         </td>
                         <td>{f.judul}</td>
                         <td>{f.tahun}</td>
