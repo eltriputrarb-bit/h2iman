@@ -30,14 +30,7 @@ export default function LoginFilm() {
 
       if (response.ok && data.success) {
         alert(`Selamat datang, ${data.username || username}!`);
-        
-        // --- PERBAIKAN: Simpan Token untuk Admin ---
-        if (data.token) {
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('admin_token', data.token);
-        }
         localStorage.setItem('user', JSON.stringify(data));
-        
         navigate('/admin');
       } else {
         alert(data.message || 'Login gagal! Periksa username dan password.');
@@ -99,4 +92,4 @@ export default function LoginFilm() {
       </div>
     </div>
   );
-}
+}   

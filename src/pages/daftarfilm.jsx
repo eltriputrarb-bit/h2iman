@@ -84,9 +84,8 @@ export default function DaftarFilm() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-useEffect(() => {
-    // Dipanggil tanpa full=true agar pengguna publik dapat mengakses data tanpa token
-    fetch('/api/films')
+  useEffect(() => {
+    fetch('/api/films?full=true')
       .then((res) => {
         if (!res.ok) throw new Error('Gagal mengambil data dari server');
         return res.json();
@@ -105,6 +104,7 @@ useEffect(() => {
         setLoading(false);
       });
   }, []);
+
   const indexOfLastFilm = currentPage * itemsPerPage;
   const indexOfFirstFilm = indexOfLastFilm - itemsPerPage;
   const currentFilms = films.slice(indexOfFirstFilm, indexOfLastFilm);
