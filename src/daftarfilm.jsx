@@ -1,0 +1,252 @@
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import Lightbox from '../components/Lightbox';
+
+export const moviesData = [
+  {
+    id: '1',
+    title: "pacrifim",
+    genre: "Action / Sci-Fi",
+    tahun: "2026",
+    rating: "13+",
+    kategori: "Film",
+    image: "/images/robot.jpg", 
+    description: "robot",
+    trailerEmbed: "https://www.youtube.com/embed/GUO2RjbaPnc?si=RjCx5soztIi2rcOp"
+  },
+  {
+    id: '2',
+    title: "insterstellar",
+    genre: "Action / Sci-Fi",
+    tahun: "2014",
+    rating: "13+",
+    kategori: "Film",
+    image: "/images/polz.jpg", 
+    description: "bumi",
+    trailerEmbed: "https://www.youtube.com/embed/zSWdZVtXT7E"
+  },
+  {
+    id: '3',
+    title: "itu saya",
+    genre: "SCHOSL",
+    tahun: "2025",
+    rating: "SU",
+    kategori: "Film",
+    image: "/images/katolik.jpg",
+    description: "sad",
+    trailerEmbed: "https://www.youtube.com/embed/mFea21VooJ4?si=VoEYqrxRgTxvogs8"
+  },
+  {
+    id: '4',
+    title: "Doraemon",
+    genre: "Animation / Family",
+    tahun: "2020",
+    rating: "SU",
+    kategori: "Film",
+    image: "/images/doraemon.jpg",
+    description: "alone",
+    trailerEmbed: "https://www.youtube.com/embed/rn1UFjNMAxA?si=lCFEQc4x3OWOF1xV"
+  },
+  {
+    id: '5',
+    title: "fast and furious",
+    genre: "Action",
+    tahun: "2021",
+    rating: "17+",
+    kategori: "Film",
+    image: "/images/ptc.jpg",
+    description: "ptc",
+    trailerEmbed: "https://www.youtube.com/embed/0Xy9fh1G4z8?si=0yep3ZL55_d7jHwq"
+  }
+];
+
+const getEmbedUrl = (url) => {
+  if (!url) return '';
+  if (url.includes('youtube.com/embed/')) return url;
+
+  let videoId = '';
+  if (url.includes('youtu.be/')) {
+    videoId = url.split('youtu.be/')[1]?.split('?')[0];
+  } else if (url.includes('youtube.com/watch')) {
+    const urlParams = new URLSearchParams(url.split('?')[1]);
+    videoId = urlParams.get('v');
+  }
+
+  return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+};
+
+export default function DaftarFilm() {
+  const [films, setFilms] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeVideo, setActiveVideo] = useState(null);
+
+  // --- FITUR PAGINATION / HALAMAN ---
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6; // Menampilkan 6 film per halaman (sesuai grid 3x2)
+
+  useEffect(() => {
+    fetch('/api/films?full=true')
+      .then((res) => {
+        if (!res.ok) throw new Error('Gagal mengambil data dari server');
+        return res.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setFilms(data);
+        } else {
+          setFilms(moviesData);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.warn('Backend server tidak aktif / error, menggunakan data dummy:', err.message);
+        setFilms(moviesData);
+        setLoading(false);
+      });
+  }, []);
+
+  // Logika memotong array film sesuai halaman aktif
+  const indexOfLastFilm = currentPage * itemsPerPage;
+  const indexOfFirstFilm = indexOfLastFilm - itemsPerPage;
+  const currentFilms = films.slice(indexOfFirstFilm, indexOfLastFilm);
+  const totalPages = Math.ceil(films.length / itemsPerPage);
+
+  if (loading) {
+    return (
+      <div className="page-container" style={{ textAlign: 'center', color: '#fff', paddingTop: '2rem' }}>
+        <p>Memuat daftar film...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="page-container">
+      <div className="section-header">
+        <h2 className="section-title">Daftar Film</h2>
+      </div>
+      
+      <div className="movie-grid">
+        {currentFilms.map((film) => {
+          const filmId = film._id || film.id;
+          const filmTitle = film.judul || film.title;
+          const filmImage = film.gambar || film.image;
+          const filmGenre = film.kategori || film.genre || 'Film';
+          const rawTrailer = film.trailer || film.trailerEmbed;
+          const embedTrailer = getEmbedUrl(rawTrailer);
+
+          return (
+            <div key={filmId} className="movie-card">
+              <div 
+                style={{ position: 'relative', cursor: 'pointer' }}
+                onClick={() => setActiveVideo({ trailerEmbed: embedTrailer, title: filmTitle })}
+              >
+                <img src={filmImage} alt={filmTitle} />
+                <div style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  backgroundColor: 'rgba(0,0,0,0.6)',
+                  borderRadius: '50%',
+                  width: '50px',
+                  height: '50px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#fff',
+                  fontSize: '1.5rem'
+                }}>
+                  ▶
+                </div>
+              </div>
+
+              <div className="movie-card-content">
+                <h3>{filmTitle}</h3>
+                <p className="genre-text">{filmGenre}</p>
+                <Link to={`/detail/${filmId}`} className="detail-btn">
+                  DETAIL &gt;
+                </Link>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* --- NAVIGASI HALAMAN (1) (2) (3) --- */}
+      {totalPages > 1 && (
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          gap: '8px', 
+          marginTop: '2.5rem',
+          paddingBottom: '2rem' 
+        }}>
+          {/* Tombol Sebelumnya */}
+          <button 
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            style={{ 
+              padding: '8px 14px', 
+              borderRadius: '4px',
+              border: '1px solid #444',
+              backgroundColor: '#222',
+              color: '#fff',
+              cursor: currentPage === 1 ? 'not-allowed' : 'pointer', 
+              opacity: currentPage === 1 ? 0.4 : 1 
+            }}
+          >
+            &lt;
+          </button>
+
+          {/* Tombol Angka Halaman */}
+          {Array.from({ length: totalPages }, (_, index) => {
+            const pageNum = index + 1;
+            return (
+              <button
+                key={pageNum}
+                onClick={() => setCurrentPage(pageNum)}
+                style={{
+                  padding: '8px 14px',
+                  borderRadius: '4px',
+                  border: 'none',
+                  backgroundColor: currentPage === pageNum ? '#e50914' : '#333',
+                  color: '#fff',
+                  fontWeight: currentPage === pageNum ? 'bold' : 'normal',
+                  cursor: 'pointer',
+                  transition: '0.2s'
+                }}
+              >
+                {pageNum}
+              </button>
+            );
+          })}
+
+          {/* Tombol Selanjutnya */}
+          <button 
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            style={{ 
+              padding: '8px 14px', 
+              borderRadius: '4px',
+              border: '1px solid #444',
+              backgroundColor: '#222',
+              color: '#fff',
+              cursor: currentPage === totalPages ? 'not-allowed' : 'pointer', 
+              opacity: currentPage === totalPages ? 0.4 : 1 
+            }}
+          >
+            &gt;
+          </button>
+        </div>
+      )}
+
+      <Lightbox 
+        isOpen={Boolean(activeVideo)} 
+        onClose={() => setActiveVideo(null)}
+        videoUrl={activeVideo?.trailerEmbed}
+        title={activeVideo?.title}
+      />
+    </div>
+  );
+}
