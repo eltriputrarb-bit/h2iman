@@ -162,7 +162,9 @@ export default function Admin() {
           <label>Upload Gambar Poster</label>
           <input type="file" accept="image/*" onChange={handleImageUpload} />
           {form.gambar && (
-            <img src={form.gambar} alt="Preview" className="admin-poster-preview" />
+            <div className="preview-container">
+              <img src={form.gambar} alt="Preview" className="admin-poster-preview" />
+            </div>
           )}
         </div>
 
@@ -213,22 +215,30 @@ export default function Admin() {
             </tr>
           </thead>
           <tbody>
-            {films.map((f) => (
-              <tr key={f._id}>
-                <td>
-                  <img src={f.gambar} alt={f.judul} className="table-thumb" />
-                </td>
-                <td>{f.judul}</td>
-                <td>{f.tahun}</td>
-                <td>★ {f.bintang || 5}</td>
-                <td>
-                  <div className="action-btns">
-                    <button onClick={() => handleEdit(f)} className="edit-btn">Edit</button>
-                    <button onClick={() => handleDelete(f._id)} className="delete-btn">Hapus</button>
-                  </div>
+            {films.length === 0 ? (
+              <tr>
+                <td colSpan="5" style={{ textAlign: 'center', padding: '1.5rem', color: '#888' }}>
+                  Belum ada film terdaftar.
                 </td>
               </tr>
-            ))}
+            ) : (
+              films.map((f) => (
+                <tr key={f._id}>
+                  <td>
+                    <img src={f.gambar} alt={f.judul} className="table-thumb" />
+                  </td>
+                  <td>{f.judul}</td>
+                  <td>{f.tahun}</td>
+                  <td>★ {f.bintang || 5}</td>
+                  <td>
+                    <div className="action-btns">
+                      <button onClick={() => handleEdit(f)} className="edit-btn">Edit</button>
+                      <button onClick={() => handleDelete(f._id)} className="delete-btn">Hapus</button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
