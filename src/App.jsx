@@ -6,7 +6,7 @@ import DetailFilm from './pages/detailfilm';
 import LoginFilm from './pages/loginfilm';
 import Admin from './pages/admin';
 import './style.css';
-import './admin.css';
+import '../admin.css';
 
 function ProtectedRoute({ children }) {
   const user = localStorage.getItem('user');
