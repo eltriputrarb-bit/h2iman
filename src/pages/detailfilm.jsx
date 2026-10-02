@@ -101,27 +101,27 @@ export default function DetailFilm() {
             <span className="badge badge-kategori">{film.kategori || 'Dokumenter'}</span>
           </div>
 
-          {/* 1. Tombol Mulai Merah (Di Atas Bintang) */}
-          {film.trailer && (
-            <a 
-              href={youtubeUrl} 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="watch-trailer-btn"
-            >
-              Mulai &gt;
-            </a>
-          )}
-
-          {/* 2. Rating Bintang (Di Bawah Tombol Mulai) */}
-          <div className="detail-rating">
-            {renderStars(film.bintang)}
-          </div>
-
-          {/* 3. Deskripsi Film */}
           <p className="detail-description">
             {film.deskripsi || 'Tidak ada deskripsi tersedia.'}
           </p>
+
+          {/* Container Sejajar Samping (Tombol Mulai + Bintang) */}
+          <div className="detail-action-row">
+            {film.trailer && (
+              <a 
+                href={youtubeUrl} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="watch-trailer-btn"
+              >
+                Mulai &gt;
+              </a>
+            )}
+
+            <div className="detail-rating">
+              {renderStars(film.bintang)}
+            </div>
+          </div>
         </div>
 
       </div>
