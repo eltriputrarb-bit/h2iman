@@ -6,9 +6,18 @@
   box-sizing: border-box;
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0d0d0d;
+}
+
 .admin-layout {
   display: flex;
   min-height: 100vh;
+  min-height: 100dvh; /* Dynamic Viewport Height untuk iOS Safari */
   background-color: #0d0d0d;
   position: relative;
   width: 100%;
@@ -90,9 +99,8 @@
 
 /* Main Content Area */
 .admin-content {
-  flex: 1;
+  flex: 1 1 auto;
   padding: 2rem;
-  overflow-y: auto;
   min-width: 0;
   width: 100%;
 }
@@ -297,10 +305,9 @@
 }
 
 /* ==========================================
-   RESPONSIVE DESIGN (TABLET & MOBILE)
+   RESPONSIVE DESIGN (TABLET & MOBILE FIX)
    ========================================== */
 
-/* Dinaikkan ke 1024px agar mode tablet/dev tools tidak kejepit */
 @media (max-width: 1024px) {
   .admin-layout {
     flex-direction: column;
@@ -316,6 +323,7 @@
     position: sticky;
     top: 0;
     z-index: 900;
+    width: 100%;
   }
 
   .hamburger-btn {
@@ -340,6 +348,7 @@
     left: 0;
     width: 260px;
     height: 100vh;
+    height: 100dvh;
     transform: translateX(-100%);
     z-index: 999;
     box-shadow: 5px 0 25px rgba(0, 0, 0, 0.8);
@@ -360,17 +369,16 @@
 
   .sidebar-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    inset: 0;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     z-index: 998;
   }
 
   .admin-content {
     padding: 1rem;
+    overflow-y: visible;
   }
 
   .admin-table-wrapper {
