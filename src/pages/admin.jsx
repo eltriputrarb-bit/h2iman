@@ -3,7 +3,7 @@ import './admin.css';
 
 const LOGO_SRC = '/images/logo.jpg';
 
-export default function Admin() {
+export default function Admin({ onLogout }) {
   const [films, setFilms] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
@@ -23,10 +23,41 @@ export default function Admin() {
     bintang: 5
   });
 
+  // Helper untuk mendapatkan token autentikasi
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem('token') || localStorage.getItem('admin_token');
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': token ? `Bearer ${token}` : ''
+    };
+  };
+
+  // Helper terpusat untuk menangani respons 401 (Sesi Berakhir / Token Dicuri / Diganti)
+  const handleAuthError = (status) => {
+    if (status === 401 || status === 403) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('admin_token');
+      sessionStorage.setItem('auth_error', 'Sesi berakhir atau token tidak valid. Silakan login ulang.');
+      
+      if (typeof onLogout === 'function') {
+        onLogout();
+      } else {
+        window.location.href = '/login';
+      }
+      return true;
+    }
+    return false;
+  };
+
   const fetchFilms = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/films?full=true&t=${Date.now()}`);
+      const res = await fetch(`/api/films?full=true&t=${Date.now()}`, {
+        headers: getAuthHeaders()
+      });
+
+      if (handleAuthError(res.status)) return;
+
       if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
       const data = await res.json();
       setFilms(Array.isArray(data) ? data : []);
@@ -66,9 +97,11 @@ export default function Admin() {
     try {
       const res = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(form)
       });
+
+      if (handleAuthError(res.status)) return;
 
       if (res.ok) {
         alert(isEditing ? 'Film berhasil diperbarui!' : 'Film berhasil ditambahkan!');
@@ -76,7 +109,7 @@ export default function Admin() {
         await fetchFilms();
         setActiveTab('list');
       } else {
-        const errData = await res.json();
+        const errData = await res.json().catch(() => ({}));
         alert(`Gagal: ${errData.message || 'Terjadi kesalahan'}`);
       }
     } catch (err) {
@@ -107,16 +140,34 @@ export default function Admin() {
     if (!window.confirm('Yakin ingin menghapus film ini?')) return;
 
     try {
-      const res = await fetch(`/api/films?id=${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/films?id=${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders()
+      });
+
+      if (handleAuthError(res.status)) return;
+
       if (res.ok) {
         alert('Film berhasil dihapus!');
         fetchFilms();
       } else {
-        const errData = await res.json();
-        alert(`Gagal menghapus: ${errData.message}`);
+        const errData = await res.json().catch(() => ({}));
+        alert(`Gagal menghapus: ${errData.message || 'Terjadi kesalahan'}`);
       }
     } catch (err) {
       alert(`Gagal menghapus: ${err.message}`);
+    }
+  };
+
+  const handleLogoutClick = () => {
+    if (window.confirm('Yakin ingin keluar dari akun admin?')) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('admin_token');
+      if (typeof onLogout === 'function') {
+        onLogout();
+      } else {
+        window.location.href = '/login';
+      }
     }
   };
 
@@ -191,6 +242,14 @@ export default function Admin() {
           >
             <span>Daftar Film Terdaftar</span>
             <span className="adm-arrow">›</span>
+          </button>
+          <button 
+            className="adm-menu-item"
+            style={{ color: '#ff4d4d', marginTop: 'auto' }}
+            onClick={handleLogoutClick}
+          >
+            <span>Keluar (Logout)</span>
+            <span className="adm-arrow">➔</span>
           </button>
         </nav>
       </aside>
@@ -355,7 +414,7 @@ export default function Admin() {
                 </tbody>
               </table>
 
-              {/* VIEW 2: KERTAS / CARD UNTUK MOBILE (SESUAI SKETSA) */}
+              {/* VIEW 2: KERTAS / CARD UNTUK MOBILE */}
               <div className="adm-mobile-cards-container">
                 {loading ? (
                   <div className="adm-card-empty-state">Sedang memuat data film...</div>
