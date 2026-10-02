@@ -1187,13 +1187,14 @@ body {
 }
 
 /* ==========================================
-   ADMIN PANEL STYLES
+   ADMIN PANEL - GLOBAL CONTAINER
    ========================================== */
 
 .admin-container {
   max-width: 900px;
   margin: 0 auto;
   padding: 2rem 1rem;
+  box-sizing: border-box;
 }
 
 .section-title {
@@ -1203,16 +1204,20 @@ body {
   font-weight: 700;
 }
 
-/* Form Management */
+/* ==========================================
+   FORM MANAGEMENT (DESKTOP & MOBILE)
+   ========================================== */
+
 .admin-form {
   background-color: #181818;
   padding: 1.5rem;
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
   margin-bottom: 2.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .form-group {
@@ -1245,13 +1250,26 @@ body {
   font-size: 0.95rem;
   outline: none;
   box-sizing: border-box;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+/* Styling khusus elemen select untuk menangani panah dropdown di iOS & Chrome */
+.admin-form select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23ffffff' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1.2rem;
+  padding-right: 2.5rem;
 }
 
 .admin-form input[type="text"]:focus,
 .admin-form select:focus,
 .admin-form textarea:focus {
   border-color: #e50914;
+  background-color: #282828;
 }
 
 .admin-form input[type="file"] {
@@ -1285,10 +1303,10 @@ body {
   border-radius: 6px;
   font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, transform 0.1s;
 }
 
-.submit-btn:hover {
+.submit-btn:hover:not(:disabled) {
   background-color: #f6121d;
 }
 
@@ -1300,31 +1318,64 @@ body {
   border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-.cancel-btn:hover {
+.cancel-btn:hover:not(:disabled) {
   background-color: #555555;
 }
 
-/* Tabel Admin */
+/* ==========================================
+   TABEL & HEADER ACTION (DESKTOP & MOBILE)
+   ========================================== */
+
 .admin-table-wrapper {
   background-color: #181818;
   padding: 1.5rem;
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
-.admin-table-wrapper h3 {
+.table-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  gap: 10px;
+}
+
+.table-header-row h3 {
   color: #ffffff;
-  margin-top: 0;
-  margin-bottom: 1rem;
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.refresh-btn {
+  background-color: #2b2b2b;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.refresh-btn:hover:not(:disabled) {
+  background-color: #383838;
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .admin-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
+  min-width: 500px;
 }
 
 .admin-table th,
@@ -1343,8 +1394,8 @@ body {
 }
 
 .table-thumb {
-  width: 50px;
-  height: 70px;
+  width: 48px;
+  height: 68px;
   object-fit: cover;
   border-radius: 4px;
 }
@@ -1358,13 +1409,15 @@ body {
   background-color: #007bff;
   color: #ffffff;
   border: none;
-  padding: 0.4rem 0.8rem;
+  padding: 0.45rem 0.85rem;
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.85rem;
+  font-weight: 600;
+  transition: background-color 0.2s;
 }
 
-.edit-btn:hover {
+.edit-btn:hover:not(:disabled) {
   background-color: #0056b3;
 }
 
@@ -1372,19 +1425,78 @@ body {
   background-color: #dc3545;
   color: #ffffff;
   border: none;
-  padding: 0.4rem 0.8rem;
+  padding: 0.45rem 0.85rem;
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.85rem;
+  font-weight: 600;
+  transition: background-color 0.2s;
 }
 
-.delete-btn:hover {
+.delete-btn:hover:not(:disabled) {
   background-color: #bd2130;
 }
 
-/* Responsive Table & Form */
-@media (max-width: 600px) {
+/* State Disabled untuk Tombol */
+.submit-btn:disabled,
+.cancel-btn:disabled,
+.refresh-btn:disabled,
+.edit-btn:disabled,
+.delete-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ==========================================
+   MEDIA QUERIES (OPTIMASI IPHONE & ANDROID)
+   ========================================== */
+
+@media (max-width: 768px) {
+  .admin-container {
+    padding: 1.2rem 0.8rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .admin-form {
+    padding: 1.2rem;
+  }
+
   .form-row {
     grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .submit-btn,
+  .cancel-btn {
+    width: 100%;
+    padding: 0.85rem;
+    font-size: 1rem;
+  }
+
+  .admin-table-wrapper {
+    padding: 1rem;
+  }
+
+  .table-header-row {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .table-header-row h3 {
+    font-size: 1.05rem;
+  }
+
+  .refresh-btn {
+    padding: 0.45rem 0.75rem;
+    font-size: 0.8rem;
   }
 }
