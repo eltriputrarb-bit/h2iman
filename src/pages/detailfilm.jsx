@@ -1,27 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import Lightbox from '../components/Lightbox';
 
-const getEmbedUrl = (url) => {
-  if (!url) return '';
-  if (url.includes('youtube.com/embed/')) return url;
-
-  let videoId = '';
-  if (url.includes('youtu.be/')) {
-    videoId = url.split('youtu.be/')[1]?.split('?')[0];
-  } else if (url.includes('youtube.com/watch')) {
-    const urlParams = new URLSearchParams(url.split('?')[1]);
-    videoId = urlParams.get('v');
+// Helper untuk mengubah URL embed YouTube menjadi URL tonton biasa jika diperlukan
+const getWatchUrl = (url) => {
+  if (!url) return '#';
+  if (url.includes('youtube.com/embed/')) {
+    const videoId = url.split('youtube.com/embed/')[1]?.split('?')[0];
+    return `https://www.youtube.com/watch?v=${videoId}`;
   }
-
-  return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+  return url;
 };
 
 export default function DetailFilm() {
   const { id } = useParams();
   const [film, setFilm] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isTrailerOpen, setIsTrailerOpen] = useState(false);
 
   useEffect(() => {
     fetch(`/api/films?id=${id}`)
@@ -76,7 +69,7 @@ export default function DetailFilm() {
     );
   }
 
-  const embedUrl = getEmbedUrl(film.trailer);
+  const youtubeUrl = getWatchUrl(film.trailer);
 
   return (
     <div className="detail-page-wrapper">
@@ -108,24 +101,19 @@ export default function DetailFilm() {
             {film.deskripsi || 'Tidak ada deskripsi tersedia.'}
           </p>
 
-          {embedUrl && (
-            <button 
-              onClick={() => setIsTrailerOpen(true)} 
+          {film.trailer && (
+            <a 
+              href={youtubeUrl} 
+              target="_blank" 
+              rel="noopener noreferrer" 
               className="watch-trailer-btn"
+              style={{ textDecoration: 'none', display: 'inline-block' }}
             >
               Mulai &gt;
-            </button>
+            </a>
           )}
         </div>
       </div>
-
-      {/* Lightbox Popup Video */}
-      <Lightbox 
-        isOpen={isTrailerOpen} 
-        onClose={() => setIsTrailerOpen(false)} 
-        videoUrl={embedUrl} 
-        title={film.judul}
-      />
     </div>
   );
 }
