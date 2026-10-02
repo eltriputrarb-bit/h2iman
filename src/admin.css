@@ -17,7 +17,7 @@ html, body {
 }
 
 /* ==========================================
-   DESKTOP LAYOUT (DEFAULT)
+   DESKTOP & IPAD/TABLET LAYOUT (>= 768px)
    ========================================== */
 
 .admin-layout {
@@ -30,7 +30,7 @@ html, body {
   overflow-x: hidden;
 }
 
-/* Header Mobile Hiden di Desktop */
+/* Header Mobile Sembunyi di Desktop & iPad */
 .mobile-header {
   display: none;
 }
@@ -39,7 +39,7 @@ html, body {
   display: none;
 }
 
-/* Sidebar Desktop */
+/* Sidebar Tetap Tampil di Desktop & iPad */
 .admin-sidebar {
   width: 260px;
   background-color: #141414;
@@ -101,13 +101,15 @@ html, body {
   font-size: 1.2rem;
 }
 
-/* Main Content Area */
+/* Area Konten Utama */
 .admin-content {
   flex: 1 1 auto;
   padding: 2.5rem;
   min-width: 0;
   width: 100%;
   box-sizing: border-box;
+  position: relative;
+  z-index: 1;
 }
 
 .content-section {
@@ -229,7 +231,7 @@ html, body {
   cursor: pointer;
 }
 
-/* Table Styling */
+/* Tabel Styling */
 .admin-table-wrapper {
   background-color: #141414;
   padding: 1.5rem;
@@ -324,11 +326,16 @@ html, body {
   font-weight: 600;
 }
 
+/* Overlay Default Sembunyi */
+.sidebar-overlay {
+  display: none;
+}
+
 /* ==========================================
-   RESPONSIVE DESIGN (TABLET & MOBILE)
+   MOBILE ONLY DESIGN (< 768px, cth: iPhone)
    ========================================== */
 
-@media (max-width: 1024px) {
+@media (max-width: 767px) {
   .admin-layout {
     flex-direction: column;
   }
@@ -362,6 +369,7 @@ html, body {
     font-weight: 700;
   }
 
+  /* Sidebar Drawer Mobile */
   .admin-sidebar {
     position: fixed;
     top: 0;
@@ -370,6 +378,7 @@ html, body {
     height: 100vh;
     height: 100dvh;
     transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 999;
     box-shadow: 5px 0 25px rgba(0, 0, 0, 0.8);
   }
@@ -387,21 +396,24 @@ html, body {
     cursor: pointer;
   }
 
+  /* Backdrop Overlay Mobile */
   .sidebar-overlay {
+    display: block;
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
-    z-index: 998;
+    z-index: 990;
   }
 
   .admin-content {
     padding: 1.25rem;
   }
-}
 
-@media (max-width: 600px) {
   .form-row {
     grid-template-columns: 1fr;
   }
