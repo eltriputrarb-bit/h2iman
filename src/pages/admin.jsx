@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './admin.css';
 
 export default function Admin() {
   const [films, setFilms] = useState([]);
@@ -134,7 +135,6 @@ export default function Admin() {
     });
   };
 
-  // Fungsi navigasi menu sekaligus menutup drawer di mobile
   const handleNavClick = (tab) => {
     setActiveTab(tab);
     setSidebarOpen(false);
@@ -154,7 +154,7 @@ export default function Admin() {
         <h2 className="mobile-logo">🎬 Film Logo</h2>
       </header>
 
-      {/* OVERLAY (Backdrop gelap saat sidebar terbuka di mobile) */}
+      {/* OVERLAY BACKDROP MOBILE */}
       {sidebarOpen && (
         <div 
           className="sidebar-overlay" 
@@ -162,11 +162,10 @@ export default function Admin() {
         />
       )}
 
-      {/* SIDEBAR NAVIGATION (Slide-in Drawer di Mobile) */}
+      {/* SIDEBAR NAVIGATION */}
       <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-logo">
           <h2>🎬 Film Logo</h2>
-          {/* Tombol Tutup Sidebar Khusus Mobile */}
           <button 
             className="close-sidebar-btn" 
             onClick={() => setSidebarOpen(false)}
@@ -335,7 +334,7 @@ export default function Admin() {
                         <td>{f.judul}</td>
                         <td>{f.tahun}</td>
                         <td>★ {f.bintang || 5}</td>
-                        <td>  
+                        <td>
                           <div className="action-btns">
                             <button onClick={() => handleEdit(f)} className="edit-btn" disabled={submitting}>Edit</button>
                             <button onClick={() => handleDelete(f._id)} className="delete-btn" disabled={submitting}>Hapus</button>
