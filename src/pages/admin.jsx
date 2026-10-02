@@ -11,6 +11,7 @@ export default function Admin({ onLogout }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [verifyingSession, setVerifyingSession] = useState(true); // State loading awal verifikasi Chrome
   
   // State untuk menampilkan notifikasi pesan sukses / error di dalam UI
   const [statusMessage, setStatusMessage] = useState({ type: '', text: '' });
@@ -52,6 +53,40 @@ export default function Admin({ onLogout }) {
     return false;
   };
 
+  // 1. ALUR BUKA CHROME / REFRESH: Cek ketersediaan token dan verifikasi ke server
+  const checkAuthSession = async () => {
+    const token = localStorage.getItem('token') || localStorage.getItem('admin_token');
+
+    // Jika token sama sekali tidak ada di browser, langsung relog
+    if (!token) {
+      handleAuthError(401);
+      return false;
+    }
+
+    try {
+      // Verifikasi token ke API server
+      const res = await fetch(`/api/auth/verify?t=${Date.now()}`, {
+        method: 'GET',
+        headers: getAuthHeaders()
+      });
+
+      if (handleAuthError(res.status)) return false;
+
+      if (!res.ok) {
+        handleAuthError(401);
+        return false;
+      }
+
+      return true;
+    } catch (err) {
+      console.error('Pemeriksaan sesi gagal:', err);
+      // Jika terjadi error jaringan atau server bermasalah saat verifikasi awal
+      return true; 
+    } finally {
+      setVerifyingSession(false);
+    }
+  };
+
   // Tampilkan pesan status sementara (auto dismiss 5 detik)
   const showNotification = (type, text) => {
     setStatusMessage({ type, text });
@@ -80,8 +115,16 @@ export default function Admin({ onLogout }) {
     }
   };
 
+  // Jalankan Cek Sesi begitu Admin dibuka di Chrome
   useEffect(() => {
-    fetchFilms();
+    const initAdmin = async () => {
+      const isSessionValid = await checkAuthSession();
+      if (isSessionValid) {
+        await fetchFilms();
+      }
+    };
+
+    initAdmin();
   }, []);
 
   const handleChange = (e) => {
@@ -209,6 +252,23 @@ export default function Admin({ onLogout }) {
     setActiveTab(tab);
     setSidebarOpen(false);
   };
+
+  // Tampilan sementara saat pertama kali membuka Chrome / memverifikasi sesi
+  if (verifyingSession) {
+    return (
+      <div style={{
+        display: 'flex',
+        height: '100vh',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#121212',
+        color: '#ffffff',
+        fontFamily: 'sans-serif'
+      }}>
+        <p>Memeriksa sesi keamanan admin...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="adm-admin-layout">
