@@ -231,7 +231,7 @@ html, body {
   cursor: pointer;
 }
 
-/* Tabel Styling */
+/* Tabel Styling Desktop */
 .admin-table-wrapper {
   background-color: #141414;
   padding: 1.5rem;
@@ -266,7 +266,6 @@ html, body {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  min-width: 500px;
 }
 
 .admin-table th,
@@ -418,14 +417,92 @@ html, body {
     grid-template-columns: 1fr;
   }
 
-  .form-actions,
-  .action-btns {
+  .form-actions {
     flex-direction: column;
   }
 
-  .admin-table th, 
+  /* ==========================================
+     KONVERSI TABEL MENJADI CARD SKETSA (IPHONE)
+     ========================================== */
+
+  .admin-table-wrapper {
+    padding: 1rem;
+  }
+
+  /* Sembunyikan thead tabel standar */
+  .admin-table thead {
+    display: none;
+  }
+
+  .admin-table, 
+  .admin-table tbody, 
+  .admin-table tr, 
   .admin-table td {
-    padding: 0.6rem 0.5rem;
-    font-size: 0.85rem;
+    display: block;
+    width: 100%;
+  }
+
+  /* Setiap baris tabel menjadi 1 Card */
+  .admin-table tr {
+    margin-bottom: 1.25rem;
+    background-color: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+  }
+
+  /* Setiap cell tersusun bertumpuk vertikal (seperti sketsa) */
+  .admin-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: right;
+  }
+
+  .admin-table td:last-child {
+    border-bottom: none;
+  }
+
+  /* Label Kiri otomatis berdasarkan urutan elemen */
+  .admin-table td:nth-child(1)::before {
+    content: "Poster";
+    font-weight: 700;
+    color: #aaaaaa;
+  }
+
+  .admin-table td:nth-child(2)::before {
+    content: "Judul";
+    font-weight: 700;
+    color: #aaaaaa;
+  }
+
+  .admin-table td:nth-child(3)::before {
+    content: "Tahun";
+    font-weight: 700;
+    color: #aaaaaa;
+  }
+
+  .admin-table td:nth-child(4)::before {
+    content: "Bintang";
+    font-weight: 700;
+    color: #aaaaaa;
+  }
+
+  .admin-table td:nth-child(5)::before {
+    content: "Aksi";
+    font-weight: 700;
+    color: #aaaaaa;
+  }
+
+  .action-btns {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .action-btns button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
   }
 }
