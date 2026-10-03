@@ -48,10 +48,23 @@ export default function DetailFilm() {
     return stars;
   };
 
-  if (loading) {
+if (loading) {
     return (
       <div className="detail-page-wrapper">
-        <p className="loading-text">Memuat detail film...</p>
+        <div className="detail-card">
+          <div className="skeleton skeleton-detail-banner"></div>
+          <div className="detail-info">
+            <div className="skeleton skeleton-title" style={{ width: '60%', height: '32px' }}></div>
+            <div style={{ display: 'flex', gap: '8px', margin: '8px 0' }}>
+              <div className="skeleton" style={{ width: '50px', height: '24px' }}></div>
+              <div className="skeleton" style={{ width: '50px', height: '24px' }}></div>
+              <div className="skeleton" style={{ width: '70px', height: '24px' }}></div>
+            </div>
+            <div className="skeleton skeleton-line-long"></div>
+            <div className="skeleton skeleton-line-long" style={{ width: '85%' }}></div>
+            <div className="skeleton skeleton-btn" style={{ width: '120px', height: '40px', marginTop: '1rem' }}></div>
+          </div>
+        </div>
       </div>
     );
   }

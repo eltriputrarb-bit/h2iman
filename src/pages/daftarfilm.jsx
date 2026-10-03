@@ -110,10 +110,26 @@ export default function DaftarFilm() {
   const currentFilms = films.slice(indexOfFirstFilm, indexOfLastFilm);
   const totalPages = Math.ceil(films.length / itemsPerPage);
 
-  if (loading) {
+if (loading) {
     return (
-      <div className="page-container" style={{ textAlign: 'center', color: '#fff', paddingTop: '2rem' }}>
-        <p>Memuat daftar film...</p>
+      <div className="page-container">
+        <div className="section-header">
+          <div className="skeleton" style={{ width: '180px', height: '28px', margin: '0 auto' }}></div>
+        </div>
+        
+        {/* Skeleton Grid */}
+        <div className="movie-grid">
+          {Array.from({ length: 6 }).map((_, idx) => (
+            <div key={idx} className="skeleton-card">
+              <div className="skeleton skeleton-img"></div>
+              <div className="skeleton-content">
+                <div className="skeleton skeleton-title"></div>
+                <div className="skeleton skeleton-text"></div>
+                <div className="skeleton skeleton-btn"></div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
