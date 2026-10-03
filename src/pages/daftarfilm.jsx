@@ -84,26 +84,26 @@ export default function DaftarFilm() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  useEffect(() => {
-    fetch('/api/films?full=true')
-      .then((res) => {
-        if (!res.ok) throw new Error('Gagal mengambil data dari server');
-        return res.json();
-      })
-      .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          setFilms(data);
-        } else {
-          setFilms(moviesData);
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.warn('Backend server tidak aktif / error, menggunakan data dummy:', err.message);
+useEffect(() => {
+  fetch('/api/films') // <-- Panggil endpoint publik
+    .then((res) => {
+      if (!res.ok) throw new Error('Gagal mengambil data dari server');
+      return res.json();
+    })
+    .then((data) => {
+      if (Array.isArray(data) && data.length > 0) {
+        setFilms(data);
+      } else {
         setFilms(moviesData);
-        setLoading(false);
-      });
-  }, []);
+      }
+      setLoading(false);
+    })
+    .catch((err) => {
+      console.warn('Backend server tidak aktif / error, menggunakan data dummy:', err.message);
+      setFilms(moviesData);
+      setLoading(false);
+    });
+}, []);
 
   const indexOfLastFilm = currentPage * itemsPerPage;
   const indexOfFirstFilm = indexOfLastFilm - itemsPerPage;
