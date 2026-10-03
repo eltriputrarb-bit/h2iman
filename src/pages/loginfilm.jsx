@@ -18,7 +18,8 @@ export default function LoginFilm() {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/login', {
+      // Panggil endpoint autentikasi
+      const response = await fetch('/api/auth', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -29,8 +30,15 @@ export default function LoginFilm() {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        alert(`Selamat datang, ${data.username || username}!`);
+        // ANTI-CURI: Simpan Token Rahasia dari Backend ke LocalStorage
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('admin_token', data.token);
+        }
         localStorage.setItem('user', JSON.stringify(data));
+        sessionStorage.removeItem('auth_error');
+
+        alert(`Selamat datang, ${data.username || username}!`);
         navigate('/admin');
       } else {
         alert(data.message || 'Login gagal! Periksa username dan password.');
@@ -48,7 +56,7 @@ export default function LoginFilm() {
       <div className="login-container">
         <div className="login-header-top">
           <Link to="/" className="back-link">&larr; Beranda</Link>
-          <h2 className="login-title">Login User</h2>
+          <h2 className="login-title">Login Admin</h2>
         </div>
         
         <form onSubmit={handleSubmit} className="login-form">
@@ -92,4 +100,4 @@ export default function LoginFilm() {
       </div>
     </div>
   );
-}   
+}

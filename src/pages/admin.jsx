@@ -11,6 +11,7 @@ export default function Admin({ onLogout }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [verifyingSession, setVerifyingSession] = useState(true);
 
   const [form, setForm] = useState({
     judul: '',
@@ -23,7 +24,6 @@ export default function Admin({ onLogout }) {
     bintang: 5
   });
 
-  // Helper untuk mendapatkan token autentikasi
   const getAuthHeaders = () => {
     const token = localStorage.getItem('token') || localStorage.getItem('admin_token');
     return {
@@ -32,11 +32,11 @@ export default function Admin({ onLogout }) {
     };
   };
 
-  // Helper terpusat untuk menangani respons 401 (Sesi Berakhir / Token Dicuri / Diganti)
   const handleAuthError = (status) => {
     if (status === 401 || status === 403) {
       localStorage.removeItem('token');
       localStorage.removeItem('admin_token');
+      localStorage.removeItem('user');
       sessionStorage.setItem('auth_error', 'Sesi berakhir atau token tidak valid. Silakan login ulang.');
       
       if (typeof onLogout === 'function') {
@@ -47,6 +47,37 @@ export default function Admin({ onLogout }) {
       return true;
     }
     return false;
+  };
+
+  // ANTI-CURI: Validasi token otomatis ke Backend saat Chrome HP dibuka / direfresh
+  const checkAuthSession = async () => {
+    const token = localStorage.getItem('token') || localStorage.getItem('admin_token');
+
+    if (!token) {
+      handleAuthError(401);
+      return false;
+    }
+
+    try {
+      const res = await fetch(`/api/auth?t=${Date.now()}`, {
+        method: 'GET',
+        headers: getAuthHeaders()
+      });
+
+      if (handleAuthError(res.status)) return false;
+
+      if (!res.ok) {
+        handleAuthError(401);
+        return false;
+      }
+
+      return true;
+    } catch (err) {
+      console.error('Pemeriksaan sesi gagal:', err);
+      return true;
+    } finally {
+      setVerifyingSession(false);
+    }
   };
 
   const fetchFilms = async () => {
@@ -69,7 +100,14 @@ export default function Admin({ onLogout }) {
   };
 
   useEffect(() => {
-    fetchFilms();
+    const initAdmin = async () => {
+      const isValid = await checkAuthSession();
+      if (isValid) {
+        await fetchFilms();
+      }
+    };
+
+    initAdmin();
   }, []);
 
   const handleChange = (e) => {
@@ -79,6 +117,12 @@ export default function Admin({ onLogout }) {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert('Ukuran gambar terlalu besar! Maksimal 2MB.');
+        e.target.value = '';
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setForm((prev) => ({ ...prev, gambar: reader.result }));
@@ -163,6 +207,7 @@ export default function Admin({ onLogout }) {
     if (window.confirm('Yakin ingin keluar dari akun admin?')) {
       localStorage.removeItem('token');
       localStorage.removeItem('admin_token');
+      localStorage.removeItem('user');
       if (typeof onLogout === 'function') {
         onLogout();
       } else {
@@ -190,6 +235,22 @@ export default function Admin({ onLogout }) {
     setActiveTab(tab);
     setSidebarOpen(false);
   };
+
+  if (verifyingSession) {
+    return (
+      <div style={{
+        display: 'flex',
+        height: '100vh',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#121212',
+        color: '#ffffff',
+        fontFamily: 'sans-serif'
+      }}>
+        <p>Memeriksa verifikasi sesi admin...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="adm-admin-layout">
