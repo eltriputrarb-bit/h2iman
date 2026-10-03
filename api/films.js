@@ -4,7 +4,7 @@ import Film from './models/Film.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'SECRET_KEY_ADMIN_FILM_2026';
 
-// Helper verifikasi token anti-curi di server
+// Helper verifikasi token anti-curi di server (Hanya untuk Admin)
 const verifyAdminToken = (req) => {
   const authHeader = req.headers.authorization || req.headers.Authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) return false;
@@ -35,10 +35,9 @@ export default async function handler(req, res) {
 
   const query = req.query || {};
   const id = query.id || req.body?.id;
-  const isFull = query.full === 'true' || query.full === true;
 
   try {
-    // GET: Boleh dibaca, tapi jika minta data full wajib bawa token valid
+    // GET: Bebas diakses publik (tanpa token) agar daftar film & detail film bisa muncul
     if (req.method === 'GET') {
       if (id) {
         if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -49,33 +48,12 @@ export default async function handler(req, res) {
         return res.status(200).json(film);
       }
 
+      // Ambil semua daftar film langsung dari MongoDB
       const films = await Film.find().sort({ createdAt: -1 }).lean();
-
-      if (isFull) {
-        // Cek Keamanan Token untuk Akses Full Data Admin
-        if (!verifyAdminToken(req)) {
-          return res.status(401).json({ message: 'Akses ditolak! Token tidak valid.' });
-        }
-        return res.status(200).json(films);
-      }
-
-      const cleanedFilms = films.map((f) => {
-        const obj = { ...f };
-        if (obj.gambar && obj.gambar.startsWith('data:image')) {
-          obj.gambar = '[Base64 Gambar Disembunyikan]';
-        }
-        obj.judul = '[Disembunyikan]';
-        obj.deskripsi = '[Disembunyikan]';
-        delete obj.createdAt;
-        delete obj.updatedAt;
-        delete obj.__v;
-        return obj;
-      });
-
-      return res.status(200).json(cleanedFilms);
+      return res.status(200).json(films);
     }
 
-    // WAJIB TERINTEGRASI SECURITY KETAT UNTUK OPERASI UBAH / TAMBAH / HAPUS
+    // WAJIB TERINTEGRASI SECURITY KETAT UNTUK OPERASI UBAH / TAMBAH / HAPUS (KHUSUS ADMIN)
     if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
       if (!verifyAdminToken(req)) {
         return res.status(401).json({ message: 'Akses Ditolak! Token Anda tidak sah atau telah kedaluwarsa.' });
