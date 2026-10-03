@@ -84,26 +84,26 @@ export default function DaftarFilm() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-useEffect(() => {
-  fetch('/api/films') // <-- Panggil endpoint publik
-    .then((res) => {
-      if (!res.ok) throw new Error('Gagal mengambil data dari server');
-      return res.json();
-    })
-    .then((data) => {
-      if (Array.isArray(data) && data.length > 0) {
-        setFilms(data);
-      } else {
+  useEffect(() => {
+    fetch('/api/films')
+      .then((res) => {
+        if (!res.ok) throw new Error('Gagal mengambil data dari server');
+        return res.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setFilms(data);
+        } else {
+          setFilms(moviesData);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.warn('Backend server tidak aktif / error, menggunakan data dummy:', err.message);
         setFilms(moviesData);
-      }
-      setLoading(false);
-    })
-    .catch((err) => {
-      console.warn('Backend server tidak aktif / error, menggunakan data dummy:', err.message);
-      setFilms(moviesData);
-      setLoading(false);
-    });
-}, []);
+        setLoading(false);
+      });
+  }, []);
 
   const indexOfLastFilm = currentPage * itemsPerPage;
   const indexOfFirstFilm = indexOfLastFilm - itemsPerPage;
@@ -136,10 +136,31 @@ useEffect(() => {
           return (
             <div key={filmId} className="movie-card">
               <div 
-                style={{ position: 'relative', cursor: 'pointer' }}
+                style={{ 
+                  position: 'relative', 
+                  cursor: 'pointer',
+                  width: '100%',
+                  height: '220px',
+                  backgroundColor: '#111',
+                  overflow: 'hidden',
+                  borderRadius: '8px 8px 0 0'
+                }}
                 onClick={() => setActiveVideo({ trailerEmbed: embedTrailer, title: filmTitle })}
               >
-                <img src={filmImage} alt={filmTitle} />
+                <img 
+                  src={filmImage} 
+                  alt={filmTitle}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    display: 'block'
+                  }}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = 'https://via.placeholder.com/300x400?text=No+Image';
+                  }}
+                />
                 <div style={{
                   position: 'absolute',
                   top: '50%',
@@ -153,7 +174,8 @@ useEffect(() => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: '#fff',
-                  fontSize: '1.5rem'
+                  fontSize: '1.2rem',
+                  boxShadow: '0 0 10px rgba(0,0,0,0.5)'
                 }}>
                   ▶
                 </div>
