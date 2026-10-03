@@ -37,8 +37,20 @@ export default async function handler(req, res) {
   const id = query.id || req.body?.id;
 
   try {
-    // GET: Bebas diakses publik (tanpa token) agar daftar film & detail film bisa muncul
+    // GET: Bebas diakses frontend, tapi proteksi akses langsung via URL Browser Address Bar
     if (req.method === 'GET') {
+      const acceptHeader = req.headers['accept'] || '';
+      const fetchMode = req.headers['sec-fetch-mode'];
+
+      // 1. Blokir jika dibuka langsung dengan mengetikkan URL di browser
+      if (fetchMode === 'navigate' && acceptHeader.includes('text/html')) {
+        return res.status(403).json({ 
+          success: false, 
+          message: 'Akses langsung via URL browser dilarang.' 
+        });
+      }
+
+      // 2. Jika ambil 1 detail film berdasarkan ID
       if (id) {
         if (!mongoose.Types.ObjectId.isValid(id)) {
           return res.status(404).json({ message: 'ID tidak valid' });
@@ -48,9 +60,19 @@ export default async function handler(req, res) {
         return res.status(200).json(film);
       }
 
-      // Ambil semua daftar film langsung dari MongoDB
+      // 3. Ambil semua daftar film & sembunyikan gambar base64 yang sangat panjang
       const films = await Film.find().sort({ createdAt: -1 }).lean();
-      return res.status(200).json(films);
+
+      const cleanedFilms = films.map((f) => {
+        const obj = { ...f };
+        // Sembunyikan string base64 gambar jika terlalu panjang
+        if (obj.gambar && obj.gambar.startsWith('data:image')) {
+          obj.gambar = '[Base64 Gambar Disembunyikan]';
+        }
+        return obj;
+      });
+
+      return res.status(200).json(cleanedFilms);
     }
 
     // WAJIB TERINTEGRASI SECURITY KETAT UNTUK OPERASI UBAH / TAMBAH / HAPUS (KHUSUS ADMIN)
