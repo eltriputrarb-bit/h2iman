@@ -7,31 +7,40 @@
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #0f172a;
+  background-image: url('/images/film.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  /* Opsional: Membuat gambar latar belakang diam saat di-scroll */
   color: #f8fafc;
   min-height: 100vh;
+  margin: 0;
 }
 
 .page-container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #0f172a;
-  color: #f8fafc;
+  background-color: transparent;
+  /* Diubah jadi transparan agar gambar di body terlihat bersih */
 }
 
+
 .navbar {
-  display: flex;  
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 8.9rem; /* Padding atas-bawah dikurangi agar navbar tidak terlalu tebal */
+  padding: 1rem 8.9rem;
+  /* Padding atas-bawah dikurangi agar navbar tidak terlalu tebal */
   background-color: #1e293b;
   border-bottom: 2px solid #334155;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .brand-title {
-  font-size: 1.1rem; /* Ukuran font judul diperkecil agar lebih elegan */
+  font-size: 1.1rem;
+  /* Ukuran font judul diperkecil agar lebih elegan */
   font-weight: 700;
   color: #38bdf8;
   text-decoration: none;
@@ -41,18 +50,21 @@ body {
   background-color: #e11d48;
   color: #ffffff;
   border: none;
-  padding: 0.4rem 1rem; /* Padding tombol disesuaikan */
+  padding: 0.4rem 1rem;
+  /* Padding tombol disesuaikan */
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
-  font-size: 0.8rem; /* Font tombol diperkecil */
+  font-size: 0.8rem;
+  /* Font tombol diperkecil */
   transition: background-color 0.2s ease;
 }
 
 .login-btn:hover {
   background-color: #be123c;
 }
+
 /* ==========================================
    2. HALAMAN DAFTAR FILM (GRID)
    ========================================== */
@@ -68,7 +80,8 @@ body {
 
 .movie-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 Kolom Desktop */
+  grid-template-columns: repeat(3, 1fr);
+  /* 3 Kolom Desktop */
   gap: 1.5rem;
   max-width: 960px;
   width: 100%;
@@ -211,8 +224,8 @@ body {
   color: #cbd5e1;
 }
 
-.form-input, 
-.form-file, 
+.form-input,
+.form-file,
 .form-textarea {
   padding: 0.6rem 0.8rem;
   border-radius: 6px;
@@ -251,18 +264,21 @@ body {
    ========================================== */
 @media (max-width: 768px) {
   .navbar {
-    padding: 0.8rem 2.4rem; /* Menyesuaikan padding samping agar tidak terpotong di HP */
+    padding: 0.8rem 2.4rem;
+    /* Menyesuaikan padding samping agar tidak terpotong di HP */
   }
 
   .brand-title {
-    font-size: 0.95rem; /* Font judul lebih kecil di layar HP */
+    font-size: 0.95rem;
+    /* Font judul lebih kecil di layar HP */
   }
 
   .login-btn {
-    font-size: 0.75rem; /* Font tombol login lebih ringkas di HP */
+    font-size: 0.75rem;
+    /* Font tombol login lebih ringkas di HP */
     padding: 0.35rem 0.8rem;
   }
-  
+
   .section-title {
     font-size: 1.2rem;
   }
@@ -309,8 +325,8 @@ body {
     font-size: 1rem;
   }
 
-  .form-input, 
-  .form-file, 
+  .form-input,
+  .form-file,
   .form-textarea {
     padding: 0.5rem 0.7rem;
     font-size: 0.8rem;
@@ -329,13 +345,15 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 120px); /* Posisikan tepat di tengah layar */
+  min-height: calc(100vh - 120px);
+  /* Posisikan tepat di tengah layar */
   padding: 1rem;
 }
 
 .login-container {
   width: 100%;
-  max-width: 360px; /* Ukuran pas untuk HP */
+  max-width: 360px;
+  /* Ukuran pas untuk HP */
   padding: 1.25rem 1.5rem;
   background-color: #1e293b;
   border-radius: 12px;
@@ -435,7 +453,8 @@ body {
 
 .admin-container {
   width: 100%;
-  max-width: 1200px; /* Menjaga batas lebar di desktop besar */
+  max-width: 1200px;
+  /* Menjaga batas lebar di desktop besar */
   padding: 2rem 1.5rem;
   box-sizing: border-box;
 }
@@ -524,10 +543,24 @@ body {
   text-align: left;
 }
 
-.col-center { text-align: center; }
-.col-title { font-weight: 600; width: 20%; }
-.col-desc { line-height: 1.4; color: #cbd5e1; }
-.col-trailer { white-space: nowrap; width: 12%; }
+.col-center {
+  text-align: center;
+}
+
+.col-title {
+  font-weight: 600;
+  width: 20%;
+}
+
+.col-desc {
+  line-height: 1.4;
+  color: #cbd5e1;
+}
+
+.col-trailer {
+  white-space: nowrap;
+  width: 12%;
+}
 
 .trailer-link {
   color: #38bdf8;
@@ -676,7 +709,8 @@ body {
   max-width: 480px;
   margin: 20px auto;
   padding: 24px 20px;
-  background-color: #0f172a; /* Dark sleek background */
+  background-color: #0f172a;
+  /* Dark sleek background */
   color: #f8fafc;
   border-radius: 28px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
@@ -881,6 +915,7 @@ body {
     height: 160px;
   }
 }
+
 /* ==========================================
    GLOBAL LAYOUT & PAGE CONTAINER
    ========================================== */
@@ -984,12 +1019,10 @@ body {
 .detail-poster-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.3) 0%,
-    rgba(24, 24, 24, 0.1) 40%,
-    rgba(24, 24, 24, 1) 100%
-  );
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.3) 0%,
+      rgba(24, 24, 24, 0.1) 40%,
+      rgba(24, 24, 24, 1) 100%);
   pointer-events: none;
 }
 
@@ -1116,8 +1149,13 @@ body {
    ========================================== */
 
 @keyframes overlayFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes cardPopUp {
@@ -1125,6 +1163,7 @@ body {
     opacity: 0;
     transform: scale(0.9) translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -1139,7 +1178,7 @@ body {
   .detail-card {
     max-width: 680px;
   }
-  
+
   .detail-poster-wrapper {
     height: 320px;
   }
@@ -1194,6 +1233,7 @@ body {
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
